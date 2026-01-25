@@ -49,6 +49,11 @@ Route::get('/components-showcase', function () {
     return Inertia::render('ComponentShowcase');
 })->middleware(['auth'])->name('components.showcase');
 
+// FlyonUI Test Route
+Route::get('/flyonui-test', function () {
+    return Inertia::render('FlyonUITest');
+})->name('flyonui.test');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

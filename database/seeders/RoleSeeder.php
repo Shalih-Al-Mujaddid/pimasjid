@@ -16,8 +16,8 @@ class RoleSeeder extends Seeder
         // Super Admin
         User::create([
             'name' => 'Super Admin',
-            'email' => 'dev@masjid.com',
-            'password' => Hash::make('password'),
+            'email' => 'admin@pimasjid.com',
+            'password' => Hash::make('admin123'),
             'role' => 'super_admin',
             'is_active' => true,
             'email_verified_at' => now(),
@@ -26,8 +26,8 @@ class RoleSeeder extends Seeder
         // Pak Ketua
         User::create([
             'name' => 'Pak Ketua',
-            'email' => 'ketua@masjid.com',
-            'password' => Hash::make('password'),
+            'email' => 'ketua@pimasjid.com',
+            'password' => Hash::make('admin123'),
             'role' => 'ketua',
             'is_active' => true,
             'email_verified_at' => now(),
@@ -36,8 +36,8 @@ class RoleSeeder extends Seeder
         // Pak Bendahara
         User::create([
             'name' => 'Pak Bendahara',
-            'email' => 'bendahara@masjid.com',
-            'password' => Hash::make('password'),
+            'email' => 'bendahara@pimasjid.com',
+            'password' => Hash::make('admin123'),
             'role' => 'bendahara',
             'is_active' => true,
             'email_verified_at' => now(),
@@ -46,8 +46,8 @@ class RoleSeeder extends Seeder
         // Pak Sekretaris
         User::create([
             'name' => 'Pak Sekretaris',
-            'email' => 'sekretaris@masjid.com',
-            'password' => Hash::make('password'),
+            'email' => 'sekretaris@pimasjid.com',
+            'password' => Hash::make('admin123'),
             'role' => 'sekretaris',
             'is_active' => true,
             'email_verified_at' => now(),
@@ -56,8 +56,8 @@ class RoleSeeder extends Seeder
         // Kang Marbot
         User::create([
             'name' => 'Kang Marbot',
-            'email' => 'marbot@masjid.com',
-            'password' => Hash::make('password'),
+            'email' => 'marbot@pimasjid.com',
+            'password' => Hash::make('admin123'),
             'role' => 'marbot',
             'is_active' => true,
             'email_verified_at' => now(),
