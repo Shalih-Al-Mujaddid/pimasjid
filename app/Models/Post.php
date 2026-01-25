@@ -16,6 +16,7 @@ class Post extends Model
         'excerpt',
         'content',
         'image_path',
+        'cloudinary_public_id',
         'author_id',
         'published_at',
         'is_published',
@@ -37,9 +38,12 @@ class Post extends Model
     // Accessors
     public function getImageUrlAttribute()
     {
-        return $this->image_path
-            ? asset('storage/' . $this->image_path)
-            : 'https://placehold.co/600x400/e2e8f0/1e293b?text=No+Image';
+        if (!$this->image_path) {
+            return 'https://placehold.co/600x400/e2e8f0/1e293b?text=No+Image';
+        }
+        return str_starts_with($this->image_path, 'http') 
+            ? $this->image_path 
+            : asset('storage/' . $this->image_path);
     }
 
     public function getAuthorNameAttribute()

@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
@@ -17,7 +16,7 @@ class PostController extends Controller
     {
         $posts = Post::with('author')
             ->latest('published_at')
-            ->get(); // Pagination can be added later if needed
+            ->get();
 
         return Inertia::render('Posts/Index', [
             'posts' => $posts
@@ -33,21 +32,26 @@ class PostController extends Controller
             'title' => 'required|string|max:255',
             'excerpt' => 'nullable|string',
             'content' => 'required|string',
-            'photo' => 'nullable|image|max:2048', // 2MB Max
+            'photo' => 'nullable|image|max:2048',
             'is_published' => 'boolean',
             'published_at' => 'nullable|date',
         ]);
 
-        $path = null;
+        $imagePath = null;
+        $cloudinaryPublicId = null;
+        
         if ($request->hasFile('photo')) {
-            $path = $request->file('photo')->store('posts', 'public');
+            $result = CloudinaryService::upload($request->file('photo'), 'posts');
+            $imagePath = $result['url'];
+            $cloudinaryPublicId = $result['public_id'];
         }
 
         Post::create([
             'title' => $validated['title'],
             'excerpt' => $validated['excerpt'],
             'content' => $validated['content'],
-            'image_path' => $path,
+            'image_path' => $imagePath,
+            'cloudinary_public_id' => $cloudinaryPublicId,
             'is_published' => $validated['is_published'] ?? false,
             'published_at' => $validated['published_at'] ?? (($validated['is_published'] ?? false) ? now() : null),
             'author_id' => auth()->id(),
@@ -71,21 +75,21 @@ class PostController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            // Delete old
-            if ($post->image_path && Storage::disk('public')->exists($post->image_path)) {
-                Storage::disk('public')->delete($post->image_path);
+            // Delete old from Cloudinary
+            if ($post->cloudinary_public_id) {
+                CloudinaryService::delete($post->cloudinary_public_id);
             }
-            $post->image_path = $request->file('photo')->store('posts', 'public');
+            
+            $result = CloudinaryService::upload($request->file('photo'), 'posts');
+            $post->image_path = $result['url'];
+            $post->cloudinary_public_id = $result['public_id'];
         }
 
-        $post->title = $validated['title']; // Mutator creates slug automatically if needed, but we might want to keep slug stable... actually Mutator runs on set.
-        // Let's rely on mutator for slug update or keep it simple.
-        
+        $post->title = $validated['title'];
         $post->excerpt = $validated['excerpt'];
         $post->content = $validated['content'];
         $post->is_published = $validated['is_published'];
         
-        // Update published_at: use custom value if provided, otherwise set to now if publishing
         if (isset($validated['published_at'])) {
             $post->published_at = $validated['published_at'];
         } elseif ($post->is_published && !$post->published_at) {
@@ -102,8 +106,9 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        if ($post->image_path && Storage::disk('public')->exists($post->image_path)) {
-            Storage::disk('public')->delete($post->image_path);
+        // Delete from Cloudinary
+        if ($post->cloudinary_public_id) {
+            CloudinaryService::delete($post->cloudinary_public_id);
         }
         
         $post->delete();

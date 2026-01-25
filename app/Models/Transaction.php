@@ -22,6 +22,7 @@ class Transaction extends Model
         'amount',
         'description',
         'proof_image_path',
+        'cloudinary_public_id',
         'verified_by',
         'date',
         'status',
@@ -115,7 +116,7 @@ class Transaction extends Model
     {
         return Attribute::make(
             get: fn () => $this->proof_image_path 
-                ? asset('storage/' . $this->proof_image_path)
+                ? (str_starts_with($this->proof_image_path, 'http') ? $this->proof_image_path : asset('storage/' . $this->proof_image_path))
                 : null,
         );
     }

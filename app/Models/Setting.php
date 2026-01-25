@@ -12,6 +12,7 @@ class Setting extends Model
     protected $fillable = [
         'key',
         'value',
+        'cloudinary_public_id',
         'type',
         'group',
         'label',

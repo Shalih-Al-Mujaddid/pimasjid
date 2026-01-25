@@ -17,6 +17,7 @@ class Slide extends Model
         'title',
         'content',
         'image_path',
+        'cloudinary_public_id',
         'is_active',
         'order',
     ];
@@ -41,7 +42,7 @@ class Slide extends Model
     {
         return Attribute::make(
             get: fn () => $this->image_path 
-                ? asset('storage/' . $this->image_path)
+                ? (str_starts_with($this->image_path, 'http') ? $this->image_path : asset('storage/' . $this->image_path))
                 : null,
         );
     }

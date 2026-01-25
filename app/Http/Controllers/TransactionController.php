@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Transaction;
 use App\Http\Resources\TransactionResource;
 use App\Http\Requests\StoreTransactionRequest;
+use App\Services\CloudinaryService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Support\Facades\Storage;
 
 class TransactionController extends Controller
 {
@@ -137,10 +137,11 @@ class TransactionController extends Controller
     {
         $data = $request->validated();
         
-        // Handle file upload for expense proof
+        // Handle file upload for expense proof to Cloudinary
         if ($request->hasFile('proof_image')) {
-            $path = $request->file('proof_image')->store('transactions', 'public');
-            $data['proof_image_path'] = $path;
+            $result = CloudinaryService::upload($request->file('proof_image'), 'transactions');
+            $data['proof_image_path'] = $result['url'];
+            $data['cloudinary_public_id'] = $result['public_id'];
         }
         
         // Add verified_by (current user)
@@ -159,9 +160,9 @@ class TransactionController extends Controller
     {
         $transaction = Transaction::findOrFail($id);
         
-        // Delete proof image if exists
-        if ($transaction->proof_image_path) {
-            Storage::disk('public')->delete($transaction->proof_image_path);
+        // Delete proof image from Cloudinary
+        if ($transaction->cloudinary_public_id) {
+            CloudinaryService::delete($transaction->cloudinary_public_id);
         }
         
         $transaction->delete();

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Slide;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class SlideController extends Controller
@@ -37,11 +37,13 @@ class SlideController extends Controller
             'order' => 'nullable|integer',
         ]);
         
-        $path = $request->file('image')->store('slides', 'public');
+        // Upload to Cloudinary
+        $result = CloudinaryService::upload($request->file('image'), 'slides');
         
         Slide::create([
             'title' => $validated['title'],
-            'image_path' => $path,
+            'image_path' => $result['url'],
+            'cloudinary_public_id' => $result['public_id'],
             'order' => $validated['order'] ?? Slide::max('order') + 1,
             'is_active' => true,
         ]);
@@ -62,8 +64,9 @@ class SlideController extends Controller
     {
         Gate::authorize('manage_operations');
         
-        if ($slide->image_path) {
-            Storage::disk('public')->delete($slide->image_path);
+        // Delete from Cloudinary
+        if ($slide->cloudinary_public_id) {
+            CloudinaryService::delete($slide->cloudinary_public_id);
         }
         
         $slide->delete();

@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Setting;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class SettingController extends Controller
 {
@@ -30,36 +29,17 @@ class SettingController extends Controller
         foreach ($request->settings as $item) {
             $setting = Setting::where('key', $item['key'])->first();
             
-            // Handle Image Upload
+            // Handle Image Upload to Cloudinary
             if ($setting->type === 'image' && isset($item['file']) && $item['file'] instanceof \Illuminate\Http\UploadedFile) {
-                // Delete old image if exists (from public folder)
-                if ($setting->value) {
-                    $oldPath = public_path(ltrim($setting->value, '/'));
-                    if (file_exists($oldPath)) {
-                        unlink($oldPath);
-                    }
+                // Delete old image from Cloudinary if exists
+                if ($setting->cloudinary_public_id) {
+                    CloudinaryService::delete($setting->cloudinary_public_id);
                 }
                 
-                // Generate unique filename
-                $filename = Str::random(40) . '.' . $item['file']->getClientOriginalExtension();
-                $destinationPath = public_path('storage/settings');
-                
-                // Ensure directory exists
-                if (!file_exists($destinationPath)) {
-                    mkdir($destinationPath, 0755, true);
-                }
-                
-                // Move file directly to public folder
-                $item['file']->move($destinationPath, $filename);
-                
-                // Also copy to storage/app/public for consistency
-                $storagePath = storage_path('app/public/settings');
-                if (!file_exists($storagePath)) {
-                    mkdir($storagePath, 0755, true);
-                }
-                copy($destinationPath . '/' . $filename, $storagePath . '/' . $filename);
-                
-                $setting->value = '/storage/settings/' . $filename;
+                // Upload to Cloudinary
+                $result = CloudinaryService::upload($item['file'], 'settings');
+                $setting->value = $result['url'];
+                $setting->cloudinary_public_id = $result['public_id'];
             } elseif ($setting->type !== 'image') {
                  $setting->value = $item['value'];
             }

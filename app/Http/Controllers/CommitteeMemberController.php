@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\CommitteeMember;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class CommitteeMemberController extends Controller
@@ -26,13 +26,15 @@ class CommitteeMemberController extends Controller
             'name' => 'required|string|max:255',
             'position' => 'required|string|max:255',
             'division' => 'required|string|max:255',
-            'photo' => 'nullable|image|max:2048', // Max 2MB
+            'photo' => 'nullable|image|max:2048',
             'order' => 'required|integer',
             'is_active' => 'boolean',
         ]);
 
         if ($request->hasFile('photo')) {
-            $validated['photo_path'] = $request->file('photo')->store('committee', 'public');
+            $result = CloudinaryService::upload($request->file('photo'), 'committee');
+            $validated['photo_path'] = $result['url'];
+            $validated['cloudinary_public_id'] = $result['public_id'];
         }
 
         CommitteeMember::create($validated);
@@ -52,11 +54,14 @@ class CommitteeMemberController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            // Delete old photo
-            if ($committeeMember->photo_path && Storage::disk('public')->exists($committeeMember->photo_path)) {
-                Storage::disk('public')->delete($committeeMember->photo_path);
+            // Delete old photo from Cloudinary
+            if ($committeeMember->cloudinary_public_id) {
+                CloudinaryService::delete($committeeMember->cloudinary_public_id);
             }
-            $validated['photo_path'] = $request->file('photo')->store('committee', 'public');
+            
+            $result = CloudinaryService::upload($request->file('photo'), 'committee');
+            $validated['photo_path'] = $result['url'];
+            $validated['cloudinary_public_id'] = $result['public_id'];
         }
 
         $committeeMember->update($validated);
@@ -66,8 +71,9 @@ class CommitteeMemberController extends Controller
 
     public function destroy(CommitteeMember $committeeMember)
     {
-        if ($committeeMember->photo_path && Storage::disk('public')->exists($committeeMember->photo_path)) {
-            Storage::disk('public')->delete($committeeMember->photo_path);
+        // Delete from Cloudinary
+        if ($committeeMember->cloudinary_public_id) {
+            CloudinaryService::delete($committeeMember->cloudinary_public_id);
         }
         
         $committeeMember->delete();
