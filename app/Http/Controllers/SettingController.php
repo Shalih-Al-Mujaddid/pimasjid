@@ -6,6 +6,7 @@ use App\Models\Setting;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class SettingController extends Controller
 {
@@ -31,13 +32,34 @@ class SettingController extends Controller
             
             // Handle Image Upload
             if ($setting->type === 'image' && isset($item['file']) && $item['file'] instanceof \Illuminate\Http\UploadedFile) {
-                // Delete old image if exists
-                if ($setting->value && Storage::disk('public')->exists($setting->value)) {
-                    Storage::disk('public')->delete($setting->value);
+                // Delete old image if exists (from public folder)
+                if ($setting->value) {
+                    $oldPath = public_path(ltrim($setting->value, '/'));
+                    if (file_exists($oldPath)) {
+                        unlink($oldPath);
+                    }
                 }
                 
-                $path = $item['file']->store('settings', 'public');
-                $setting->value = '/storage/' . $path;
+                // Generate unique filename
+                $filename = Str::random(40) . '.' . $item['file']->getClientOriginalExtension();
+                $destinationPath = public_path('storage/settings');
+                
+                // Ensure directory exists
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0755, true);
+                }
+                
+                // Move file directly to public folder
+                $item['file']->move($destinationPath, $filename);
+                
+                // Also copy to storage/app/public for consistency
+                $storagePath = storage_path('app/public/settings');
+                if (!file_exists($storagePath)) {
+                    mkdir($storagePath, 0755, true);
+                }
+                copy($destinationPath . '/' . $filename, $storagePath . '/' . $filename);
+                
+                $setting->value = '/storage/settings/' . $filename;
             } elseif ($setting->type !== 'image') {
                  $setting->value = $item['value'];
             }

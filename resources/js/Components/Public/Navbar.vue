@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import { Menu, MenuButton, MenuItems, MenuItem, Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue';
+import { UsersIcon, HeartIcon, BanknotesIcon } from '@heroicons/vue/24/outline';
 
 // No props needed for modal anymore as it's internal
 const props = defineProps(['activePage']);
@@ -62,85 +63,124 @@ defineExpose({ openDonationModal: () => showDonationModal.value = true });
     <!-- Desktop & Mobile Navbar -->
     <nav
         :class="[
-            'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-            isScrolled ? 'bg-white shadow-lg' : 'bg-white/95 backdrop-blur-md',
+            'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
+            isScrolled 
+                ? 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 py-2 shadow-xl shadow-slate-200/50 dark:shadow-none' 
+                : 'bg-transparent py-4 text-white',
         ]"
     >
-        <div class="max-w-7xl mx-auto px-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
-                <Link href="/" class="flex items-center gap-2 font-bold text-emerald-700 hover:text-emerald-800 transition-colors">
-                    <img 
-                        v-if="$page.props.settings?.logo_path" 
-                        :src="$page.props.settings.logo_path" 
-                        alt="Logo" 
-                        class="h-8 w-auto"
-                    />
-                    <span v-else class="text-2xl">🕌</span>
-                    <span class="hidden sm:block">{{ $page.props.settings?.site_name || 'MasjidVision' }}</span>
+                <Link href="/" class="flex items-center gap-3 font-black text-2xl tracking-tighter transition-all hover:scale-105">
+                    <div class="flex items-center justify-center p-1 bg-white/10 backdrop-blur-sm rounded-xl">
+                        <img 
+                            v-if="$page.props.settings?.logo_path" 
+                            :src="$page.props.settings.logo_path" 
+                            alt="Logo" 
+                            class="h-10 w-auto object-contain"
+                        />
+                        <span v-else class="text-2xl">🕌</span>
+                    </div>
+                    <span :class="isScrolled ? 'text-bakri-teal' : 'text-white'" class="hidden sm:block">
+                        {{ $page.props.settings?.site_name || 'pimasjid' }}
+                    </span>
                 </Link>
-
                 <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center gap-1">
+                <div class="hidden md:flex items-center gap-2">
                     <template v-for="item in navigationItems" :key="item.name">
-                        <!-- Simple Link -->
-                        <Link
+                        <Link 
                             v-if="item.type === 'link'"
                             :href="item.href"
-                            class="px-4 py-2 rounded-lg text-slate-700 hover:text-emerald-600 hover:bg-emerald-50 transition-colors font-medium"
+                            :class="[
+                                isScrolled 
+                                    ? item.current ? 'text-bakri-teal bg-bakri-teal/5' : 'text-slate-600 hover:text-bakri-teal hover:bg-bakri-teal/5' 
+                                    : 'text-white/90 hover:text-white hover:bg-white/10'
+                            ]"
+                            class="px-4 py-2 rounded-full text-sm font-bold transition-all uppercase tracking-wide"
                         >
                             {{ item.name }}
                         </Link>
 
                         <!-- Dropdown Menu -->
                         <Menu v-else as="div" class="relative">
-                            <MenuButton class="px-4 py-2 rounded-lg text-slate-700 hover:text-emerald-600 hover:bg-emerald-50 transition-colors font-medium flex items-center gap-1">
+                            <MenuButton 
+                                :class="[
+                                    'px-4 py-2 rounded-full transition-all duration-300 font-bold text-sm uppercase tracking-wide flex items-center gap-1.5',
+                                    isScrolled 
+                                        ? 'text-slate-600 hover:text-bakri-teal hover:bg-bakri-teal/5' 
+                                        : 'text-white/90 hover:text-white hover:bg-white/10'
+                                ]"
+                            >
                                 {{ item.name }}
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </MenuButton>
-                            <MenuItems class="absolute left-0 mt-2 w-56 origin-top-left rounded-xl bg-white shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none py-2">
-                                <MenuItem v-for="subItem in item.items" :key="subItem.name" v-slot="{ active }">
-                                    <Link
-                                        :href="subItem.href.startsWith('#') && $page.url !== '/' ? '/' + subItem.href : subItem.href"
-                                        :class="[
-                                            active ? 'bg-emerald-50 text-emerald-700' : 'text-slate-700',
-                                            'block px-4 py-2 text-sm font-medium',
-                                        ]"
-                                    >
-                                        {{ subItem.name }}
-                                    </Link>
-                                </MenuItem>
-                            </MenuItems>
+                            <transition
+                                enter-active-class="transition duration-100 ease-out"
+                                enter-from-class="transform scale-95 opacity-0"
+                                enter-to-class="transform scale-100 opacity-100"
+                                leave-active-class="transition duration-75 ease-in"
+                                leave-from-class="transform scale-100 opacity-100"
+                                leave-to-class="transform scale-95 opacity-0"
+                            >
+                                <MenuItems class="absolute left-0 mt-3 w-64 origin-top-left rounded-2xl bg-white dark:bg-slate-900 shadow-2xl ring-1 ring-slate-200 dark:ring-slate-800 focus:outline-none py-3 overflow-hidden border-t-4 border-bakri-teal">
+                                    <div class="px-4 py-2 mb-1 border-b border-slate-50 dark:border-slate-800">
+                                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ item.name }}</span>
+                                    </div>
+                                    <MenuItem v-for="subItem in item.items" :key="subItem.name" v-slot="{ active }">
+                                        <Link
+                                            :href="subItem.href.startsWith('#') && $page.url !== '/' ? '/' + subItem.href : subItem.href"
+                                            :class="[
+                                                active ? 'bg-bakri-teal/5 text-bakri-teal' : 'text-slate-700 dark:text-slate-300',
+                                                'flex items-center gap-3 px-4 py-2.5 text-sm font-bold transition-colors uppercase tracking-tight',
+                                            ]"
+                                        >
+                                            <div class="w-1.5 h-1.5 rounded-full bg-bakri-teal opacity-0 transition-opacity" :class="{'opacity-100': active}"></div>
+                                            {{ subItem.name }}
+                                        </Link>
+                                    </MenuItem>
+                                </MenuItems>
+                            </transition>
                         </Menu>
                     </template>
+
+                    <!-- User / Login -->
+                    <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-3 hidden lg:block"></div>
 
                     <!-- Donasi Button -->
                     <button
                         @click="showDonationModal = true"
-                        class="ml-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-6 py-2 rounded-full font-bold shadow-md hover:shadow-lg transition-all"
+                        class="group relative inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-amber-400 to-amber-600 text-white rounded-full font-black text-xs uppercase tracking-widest shadow-xl shadow-amber-500/30 hover:shadow-amber-500/50 hover:-translate-y-1 transition-all duration-300 ring-4 ring-amber-500/10 hover:ring-amber-500/20 active:scale-95 overflow-hidden"
                     >
-                        💰 Donasi
+                        <!-- Shine effect -->
+                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-shine"></div>
+                        
+                        <HeartIcon class="w-4 h-4 text-white animate-pulse" />
+                        <span class="relative">Dana Masjid</span>
                     </button>
 
-                    <!-- Admin Login -->
-                    <Link href="/login" class="ml-2 p-2 text-slate-600 hover:text-emerald-600 transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                        </svg>
+                    <!-- Admin Link -->
+                    <Link 
+                        href="/login" 
+                        class="btn btn-square btn-ghost btn-sm rounded-xl ml-1"
+                        :class="isScrolled ? 'text-slate-400 hover:text-emerald-600' : 'text-white/60 hover:text-white'"
+                    >
+                        <UsersIcon class="w-5 h-5" />
                     </Link>
                 </div>
 
                 <!-- Mobile Hamburger -->
                 <button
                     @click="isMobileMenuOpen = !isMobileMenuOpen"
-                    class="md:hidden p-2 text-slate-700 hover:text-emerald-600"
+                    class="btn btn-square btn-ghost lg:hidden"
+                    :class="isScrolled ? 'text-slate-900' : 'text-white'"
                 >
-                    <svg v-if="!isMobileMenuOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg v-if="!isMobileMenuOpen" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
-                    <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg v-else class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>

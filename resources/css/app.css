@@ -26,11 +26,11 @@
 
     /* Gradient Button */
     .btn-primary {
-        @apply bg-gradient-islamic text-white font-semibold py-3 px-6 rounded-lg shadow-islamic hover:shadow-lg transition-all duration-200 hover:scale-105;
+        @apply bg-bakri-teal text-white font-semibold py-3 px-6 rounded-lg shadow-islamic hover:shadow-lg transition-all duration-200 hover:scale-105;
     }
 
     .btn-secondary {
-        @apply bg-gradient-gold text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105;
+        @apply bg-bakri-lime text-bakri-navy font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105;
     }
 
     /* Table Styles */
@@ -39,7 +39,7 @@
     }
 
     .table-modern thead {
-        @apply bg-gradient-islamic text-white sticky top-0 z-10;
+        @apply bg-bakri-teal text-white sticky top-0 z-10;
     }
 
     .table-modern th {
@@ -90,7 +90,7 @@
     }
 
     .scrollbar-thin::-webkit-scrollbar-thumb {
-        @apply bg-primary-600 rounded-full hover:bg-primary-700;
+        @apply bg-primary-500 rounded-full hover:bg-primary-600;
     }
 
     /* Hide Scrollbar */
@@ -108,11 +108,11 @@
 
     /* Text Gradient */
     .text-gradient-islamic {
-        @apply bg-gradient-islamic bg-clip-text text-transparent;
+        @apply bg-bakri-teal bg-clip-text text-transparent;
     }
 
     .text-gradient-gold {
-        @apply bg-gradient-gold bg-clip-text text-transparent;
+        @apply bg-bakri-lime bg-clip-text text-transparent;
     }
 
     /* Marquee Animation */
