@@ -1,0 +1,136 @@
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Amiri:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply font-sans antialiased bg-slate-50 text-slate-900;
+    }
+
+    /* Arabic Text Styling */
+    .arabic {
+        @apply font-arabic text-right;
+        direction: rtl;
+    }
+}
+
+@layer components {
+
+    /* Modern Islamic Card */
+    .card-islamic {
+        @apply bg-white rounded-xl shadow-soft border border-slate-100 p-6;
+    }
+
+    /* Gradient Button */
+    .btn-primary {
+        @apply bg-gradient-islamic text-white font-semibold py-3 px-6 rounded-lg shadow-islamic hover:shadow-lg transition-all duration-200 hover:scale-105;
+    }
+
+    .btn-secondary {
+        @apply bg-gradient-gold text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105;
+    }
+
+    /* Table Styles */
+    .table-modern {
+        @apply w-full border-collapse;
+    }
+
+    .table-modern thead {
+        @apply bg-gradient-islamic text-white sticky top-0 z-10;
+    }
+
+    .table-modern th {
+        @apply px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider;
+    }
+
+    .table-modern tbody tr {
+        @apply border-b border-slate-100 hover:bg-slate-50 transition-colors duration-150;
+    }
+
+    .table-modern td {
+        @apply px-6 py-4 text-sm text-slate-700;
+    }
+
+    /* Glassmorphism for TV Display */
+    .glass-panel {
+        @apply bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl;
+    }
+
+    .glass-dark {
+        @apply bg-slate-900/70 backdrop-blur-lg border border-white/10 rounded-2xl;
+    }
+
+    .text-display {
+        @apply text-white font-bold tracking-wide;
+    }
+
+    .text-glow {
+        text-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+    }
+}
+
+@layer utilities {
+
+    /* Custom Scrollbar */
+    .scrollbar-thin {
+        scrollbar-width: thin;
+        scrollbar-color: #059669 #f1f5f9;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-track {
+        @apply bg-slate-100 rounded-full;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+        @apply bg-primary-600 rounded-full hover:bg-primary-700;
+    }
+
+    /* Hide Scrollbar */
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        /* IE and Edge */
+        scrollbar-width: none;
+        /* Firefox */
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+        /* Chrome, Safari */
+    }
+
+    /* Text Gradient */
+    .text-gradient-islamic {
+        @apply bg-gradient-islamic bg-clip-text text-transparent;
+    }
+
+    .text-gradient-gold {
+        @apply bg-gradient-gold bg-clip-text text-transparent;
+    }
+
+    /* Marquee Animation */
+    .animate-marquee {
+        animation: marquee 30s linear infinite;
+    }
+
+    @keyframes marquee {
+        0% {
+            transform: translateX(100%);
+        }
+
+        100% {
+            transform: translateX(-100%);
+        }
+    }
+
+    .animate-marquee:hover {
+        animation-play-state: paused;
+    }
+}

@@ -1,0 +1,53 @@
+{
+    "name": "MasjidVision - Sistem Manajemen Masjid",
+    "short_name": "MasjidVision",
+    "description": "Aplikasi manajemen masjid digital dengan transparansi keuangan, jadwal sholat, dan informasi masjid",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "portrait",
+    "theme_color": "#10b981",
+    "background_color": "#ffffff",
+    "icons": [
+        {
+            "src": "/icon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": [
+        "productivity",
+        "utilities",
+        "lifestyle"
+    ],
+    "screenshots": [],
+    "shortcuts": [
+        {
+            "name": "Lihat Keuangan",
+            "short_name": "Keuangan",
+            "description": "Transparansi keuangan masjid",
+            "url": "/transparansi/keuangan",
+            "icons": [
+                {
+                    "src": "/icon.svg",
+                    "sizes": "any",
+                    "type": "image/svg+xml"
+                }
+            ]
+        },
+        {
+            "name": "Jadwal Sholat",
+            "short_name": "Jadwal",
+            "description": "Lihat jadwal sholat hari ini",
+            "url": "/ibadah/jadwal",
+            "icons": [
+                {
+                    "src": "/icon.svg",
+                    "sizes": "any",
+                    "type": "image/svg+xml"
+                }
+            ]
+        }
+    ]
+}
