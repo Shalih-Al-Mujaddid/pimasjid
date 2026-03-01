@@ -16,10 +16,7 @@ const stopImpersonation = () => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-slate-50 relative flex">
-        <!-- Dark Mode Background Fix -->
-        <div class="absolute inset-0 z-[-1] bg-slate-50 dark:bg-slate-900 transition-colors"></div>
-
+    <div class="h-screen flex overflow-hidden bg-slate-50 dark:bg-slate-900 relative">
         <!-- Mobile Sidebar Overlay -->
         <div 
             v-if="showingSidebar" 
@@ -27,10 +24,10 @@ const stopImpersonation = () => {
             @click="showingSidebar = false"
         ></div>
 
-        <!-- Sidebar (Desktop & Mobile Slide-over) -->
+        <!-- Sidebar (Fixed) -->
         <aside 
-            class="fixed lg:static inset-y-0 left-0 index-50 z-50 w-64 bg-white border-r border-slate-200 transform transition-transform duration-300 lg:transform-none lg:block overflow-y-auto"
-            :class="showingSidebar ? 'translate-x-0 shadow-2xl' : '-translate-x-full lg:shadow-none'"
+            class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 transform transition-transform duration-300 lg:translate-x-0 overflow-y-auto"
+            :class="showingSidebar ? 'translate-x-0 shadow-2xl' : '-translate-x-full'"
         >
             <div class="h-full flex flex-col">
                 <!-- Mobile Close Button -->
@@ -40,19 +37,15 @@ const stopImpersonation = () => {
                     </button>
                 </div>
 
-                <!-- Desktop Logo (Only if needed, Sidebar has its own header?) -->
-                <!-- Checking sidebar code: Sidebar.vue has user info but no logo at top. -->
-                <!-- We can keep Sidebar as is or add logo here. Let's rely on Sidebar.vue content. -->
-                
                 <Sidebar />
             </div>
         </aside>
 
         <!-- Main Content Wrapper -->
-        <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <div class="flex-1 flex flex-col min-w-0 lg:ml-64 relative overflow-hidden">
             
             <!-- Top Header (Hamburger + User Dropdown) -->
-            <header class="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-4 lg:px-8 shadow-sm">
+            <header class="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-4 lg:px-8 shadow-sm z-30">
                 <!-- Left: Hamburger (Mobile Only) -->
                 <div class="flex items-center gap-4">
                     <button 
@@ -109,24 +102,24 @@ const stopImpersonation = () => {
             </header>
 
             <!-- Impersonation Banner (Global) -->
-            <div v-if="$page.props.isImpersonating" class="bg-amber-500 text-white px-4 lg:px-8 py-3 flex items-center justify-between shadow-md">
+            <div v-if="$page.props.isImpersonating" class="bg-amber-500 text-white px-4 lg:px-8 py-3 flex items-center justify-between shadow-md z-20">
                 <div class="flex items-center gap-3">
                     <span class="text-2xl">⚠️</span>
                     <div>
-                        <h3 class="font-semibold">Mode Impersonation Aktif</h3>
-                        <p class="text-xs text-amber-100">Anda sedang login sebagai <strong>{{ $page.props.auth.user.name }}</strong></p>
+                        <h3 class="font-semibold text-sm">Mode Impersonation Aktif</h3>
+                        <p class="text-[10px] text-amber-100 uppercase tracking-wider">Login sebagai: <strong>{{ $page.props.auth.user.name }}</strong></p>
                     </div>
                 </div>
                 <button 
                     @click="stopImpersonation"
-                    class="bg-white text-amber-600 hover:bg-amber-50 font-semibold py-2 px-4 rounded-lg transition-colors text-sm shadow-sm"
+                    class="bg-white text-amber-600 hover:bg-amber-50 font-bold py-1.5 px-3 rounded-lg transition-colors text-xs shadow-sm uppercase"
                 >
-                    ← Kembali ke Admin
+                    Kembali
                 </button>
             </div>
 
             <!-- Main Content Scroll Area -->
-            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-slate-50 dark:bg-slate-900">
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-slate-50 dark:bg-slate-900 scroll-smooth">
                 <!-- Page Heading (Optional) -->
                 <div v-if="$slots.header" class="bg-white shadow-sm border-b border-slate-100 dark:bg-slate-800 dark:border-slate-700">
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
@@ -135,7 +128,9 @@ const stopImpersonation = () => {
                 </div>
 
                 <!-- Content Slot -->
-                <slot />
+                <div class="py-12 px-4 sm:px-6 lg:px-8">
+                    <slot />
+                </div>
             </main>
         </div>
     </div>

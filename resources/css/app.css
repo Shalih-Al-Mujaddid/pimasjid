@@ -111,6 +111,10 @@
         @apply bg-bakri-teal bg-clip-text text-transparent;
     }
 
+    .bg-gradient-islamic {
+        @apply bg-gradient-to-br from-primary-500 to-primary-700;
+    }
+
     .text-gradient-gold {
         @apply bg-bakri-lime bg-clip-text text-transparent;
     }

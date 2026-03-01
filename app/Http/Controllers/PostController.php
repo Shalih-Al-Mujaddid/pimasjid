@@ -46,9 +46,15 @@ class PostController extends Controller
             $cloudinaryPublicId = $result['public_id'];
         }
 
+        $excerpt = $validated['excerpt'];
+        if (empty($excerpt)) {
+            $excerpt = strip_tags($validated['content']);
+            $excerpt = mb_substr($excerpt, 0, 160) . (mb_strlen($excerpt) > 160 ? '...' : '');
+        }
+
         Post::create([
             'title' => $validated['title'],
-            'excerpt' => $validated['excerpt'],
+            'excerpt' => $excerpt,
             'content' => $validated['content'],
             'image_path' => $imagePath,
             'cloudinary_public_id' => $cloudinaryPublicId,
@@ -87,6 +93,12 @@ class PostController extends Controller
 
         $post->title = $validated['title'];
         $post->excerpt = $validated['excerpt'];
+        
+        if (empty($post->excerpt)) {
+            $excerpt = strip_tags($validated['content']);
+            $post->excerpt = mb_substr($excerpt, 0, 160) . (mb_strlen($excerpt) > 160 ? '...' : '');
+        }
+
         $post->content = $validated['content'];
         $post->is_published = $validated['is_published'];
         

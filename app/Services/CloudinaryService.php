@@ -16,14 +16,14 @@ class CloudinaryService
      */
     public static function upload(UploadedFile $file, string $folder = 'general'): array
     {
-        $result = Cloudinary::upload($file->getRealPath(), [
+        $result = Cloudinary::uploadApi()->upload($file->getRealPath(), [
             'folder' => 'pimasjid/' . $folder,
             'resource_type' => 'auto',
         ]);
 
         return [
-            'url' => $result->getSecurePath(),
-            'public_id' => $result->getPublicId(),
+            'url' => $result['secure_url'],
+            'public_id' => $result['public_id'],
         ];
     }
 
@@ -36,7 +36,7 @@ class CloudinaryService
     public static function delete(string $publicId): bool
     {
         try {
-            Cloudinary::destroy($publicId);
+            Cloudinary::uploadApi()->destroy($publicId);
             return true;
         } catch (\Exception $e) {
             return false;
@@ -57,6 +57,8 @@ class CloudinaryService
             'fetch_format' => 'auto',
         ];
 
-        return Cloudinary::getUrl($publicId, array_merge($defaultOptions, $options));
+        return Cloudinary::image($publicId)
+            ->addTransformation(array_merge($defaultOptions, $options))
+            ->toUrl();
     }
 }

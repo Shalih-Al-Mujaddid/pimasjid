@@ -1,0 +1,8 @@
+FTP Username: file@raudhatulfitrah.id
+FTP server: ftp.tahfizbaubau.com || 194.163.42.226
+FTP & explicit FTPS port:  21
+ftp password : Piblajar2020
+
+n1025777_raudhatulfitrah.id
+
+domain : raudhatulfitrah.id
