@@ -13,7 +13,7 @@ const props = defineProps({
     <PublicLayout>
 
         <!-- Hero Section -->
-        <div class="relative bg-gradient-islamic pt-32 pb-24 text-center text-white overflow-hidden">
+        <div class="relative bg-gradient-to-br from-primary-700 to-primary-900 pt-32 pb-24 text-center text-white overflow-hidden">
              <!-- Decorative Islamic Pattern Overlay -->
             <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/arabesque.png')]"></div>
             
@@ -21,7 +21,7 @@ const props = defineProps({
                 <div class="block w-fit mx-auto py-1 px-3 rounded-full bg-white/10 backdrop-blur-sm text-emerald-100 text-sm font-medium mb-4 border border-white/20">
                     Dewan Kemakmuran Masjid
                 </div>
-                <h1 class="text-4xl md:text-5xl font-bold mb-4 font-serif relative inline-block">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 font-serif relative inline-block text-amber-400 drop-shadow-md">
                     Struktur Organisasi
                     <span class="absolute -bottom-2 left-1/4 right-1/4 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></span>
                 </h1>
@@ -87,19 +87,23 @@ const props = defineProps({
                         <div class="h-px bg-slate-200 w-16"></div>
                      </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                         <template v-for="(members, divName) in committee" :key="divName">
-                            <div v-if="divName !== 'Inti'" class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-slate-100 group">
-                                <div class="bg-slate-50 px-6 py-4 border-b border-slate-100 flex justify-between items-center group-hover:bg-emerald-50 transition-colors">
-                                    <h4 class="font-bold text-slate-800">{{ divName }}</h4>
-                                    <span class="text-xs font-medium bg-white px-2 py-1 rounded text-slate-500 shadow-sm">{{ members.length }} Anggota</span>
+                            <div v-if="divName !== 'Inti'" class="flex flex-col h-full">
+                                <div class="flex items-center gap-3 mb-6">
+                                    <div class="h-8 w-1 bg-emerald-500 rounded-full"></div>
+                                    <h4 class="font-bold text-slate-800 text-lg uppercase tracking-tight">{{ divName }}</h4>
                                 </div>
-                                <div class="p-6 space-y-5">
-                                    <div v-for="member in members" :key="member.id" class="flex items-center gap-4">
-                                        <img :src="member.photo_url" :alt="member.name" class="w-12 h-12 rounded-full bg-slate-200 object-cover border border-white shadow-sm" />
-                                        <div>
-                                            <div class="font-bold text-slate-800 text-sm leading-tight">{{ member.name }}</div>
-                                            <div class="text-xs text-emerald-600 font-medium mt-0.5">{{ member.position }}</div>
+                                
+                                <div class="grid grid-cols-1 gap-4">
+                                    <div v-for="member in members" :key="member.id" class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 hover:shadow-md transition-shadow flex items-center gap-4 group">
+                                        <div class="relative flex-shrink-0">
+                                            <div class="absolute inset-0 bg-emerald-500 rounded-full blur-sm opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                                            <img :src="member.photo_url" :alt="member.name" class="relative w-14 h-14 rounded-full bg-slate-100 object-cover border-2 border-white shadow-sm" />
+                                        </div>
+                                        <div class="min-w-0">
+                                            <div class="font-bold text-slate-800 text-sm truncate leading-snug">{{ member.name }}</div>
+                                            <div class="text-xs text-emerald-600 font-medium mt-0.5 truncate">{{ member.position }}</div>
                                         </div>
                                     </div>
                                 </div>

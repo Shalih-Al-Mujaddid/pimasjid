@@ -19,9 +19,19 @@ Route::get('/transparansi/aset', [App\Http\Controllers\PublicController::class, 
 Route::get('/ibadah/jumat', [App\Http\Controllers\PublicController::class, 'jumat'])->name('public.jumat');
 Route::get('/ibadah/jadwal', [App\Http\Controllers\PublicController::class, 'jadwal'])->name('public.jadwal');
 Route::get('/ibadah/agenda', [App\Http\Controllers\PublicController::class, 'agenda'])->name('public.agenda');
+Route::get('/ibadah/kiblat', [App\Http\Controllers\PublicController::class, 'kiblat'])->name('public.kiblat');
 Route::get('/galeri', [App\Http\Controllers\PublicController::class, 'galeri'])->name('public.galeri');
 Route::get('/berita', [App\Http\Controllers\PublicController::class, 'berita'])->name('public.berita');
 Route::get('/berita/{post:slug}', [App\Http\Controllers\PublicController::class, 'post'])->name('public.post');
+
+// Public Al-Quran
+Route::get('/quran', function () {
+    return inertia('Public/QuranIndex');
+})->name('public.quran');
+
+Route::get('/quran/{nomor}', function ($nomor) {
+    return inertia('Public/QuranShow', ['nomor' => $nomor]);
+})->name('public.quran.show');
 
 // Public Zakat & Qurban Info Pages (tanpa auth)
 Route::get('/info/zakat', function () {

@@ -24,16 +24,15 @@ const submit = () => {
     <Head title="Pendaftaran Qurban" />
 
     <PublicLayout>
-        <div class="py-12 pt-24 bg-gradient-to-b from-emerald-50 to-white">
+        <div class="bg-emerald-700 pt-32 pb-16 text-center text-white mb-8">
+            <h1 class="text-4xl font-bold mb-4">🐑 Pendaftaran Qurban</h1>
+            <p class="text-emerald-100 max-w-2xl mx-auto">
+                Daftarkan diri Anda untuk berqurban di Masjid kami. Form ini hanya untuk pendaftaran awal,
+                pengurus akan menghubungi Anda untuk konfirmasi.
+            </p>
+        </div>
+        <div class="pb-12 bg-white">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <!-- Hero Section -->
-                <div class="text-center mb-12">
-                    <h1 class="text-4xl font-bold text-slate-900 mb-4">🐑 Qurban</h1>
-                    <p class="text-lg text-slate-600 max-w-2xl mx-auto">
-                        Daftarkan diri Anda untuk berqurban di Masjid kami. Form ini hanya untuk pendaftaran awal,
-                        pengurus akan menghubungi Anda untuk konfirmasi.
-                    </p>
-                </div>
 
                 <!-- Info Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">

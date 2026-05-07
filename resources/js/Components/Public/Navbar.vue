@@ -5,7 +5,13 @@ import { Menu, MenuButton, MenuItems, MenuItem, Dialog, DialogPanel, TransitionC
 import { UsersIcon, HeartIcon, BanknotesIcon } from '@heroicons/vue/24/outline';
 
 // No props needed for modal anymore as it's internal
-const props = defineProps(['activePage']);
+const props = defineProps({
+    activePage: String,
+    transparentOnTop: {
+        type: Boolean,
+        default: true
+    }
+});
 
 const isScrolled = ref(false);
 const isMobileMenuOpen = ref(false);
@@ -49,6 +55,8 @@ const navigationItems = [
             { name: 'Jadwal Sholat', href: '/ibadah/jadwal' },
             { name: 'Agenda', href: '/ibadah/agenda' },
             { name: 'Petugas Jumat', href: '/ibadah/jumat' },
+            { name: '🧭 Arah Kiblat', href: '/ibadah/kiblat' },
+            { name: '📖 Al-Quran Digital', href: '/quran' },
             { name: '🕌 Info Zakat', href: '/info/zakat' },
             { name: '🐑 Daftar Qurban', href: '/info/qurban' },
         ],
@@ -64,7 +72,7 @@ defineExpose({ openDonationModal: () => showDonationModal.value = true });
     <nav
         :class="[
             'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
-            isScrolled 
+            (isScrolled || !transparentOnTop) 
                 ? 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 py-2 shadow-xl shadow-slate-200/50 dark:shadow-none' 
                 : 'bg-transparent py-4 text-white',
         ]"
@@ -82,7 +90,7 @@ defineExpose({ openDonationModal: () => showDonationModal.value = true });
                         />
                         <span v-else class="text-2xl">🕌</span>
                     </div>
-                    <span :class="isScrolled ? 'text-bakri-teal' : 'text-white'" class="hidden sm:block">
+                    <span :class="(isScrolled || !transparentOnTop) ? 'text-bakri-teal' : 'text-white'" class="hidden sm:block">
                         {{ $page.props.settings?.site_name || 'pimasjid' }}
                     </span>
                 </Link>
@@ -93,7 +101,7 @@ defineExpose({ openDonationModal: () => showDonationModal.value = true });
                             v-if="item.type === 'link'"
                             :href="item.href"
                             :class="[
-                                isScrolled 
+                                (isScrolled || !transparentOnTop) 
                                     ? item.current ? 'text-bakri-teal bg-bakri-teal/5' : 'text-slate-600 hover:text-bakri-teal hover:bg-bakri-teal/5' 
                                     : 'text-white/90 hover:text-white hover:bg-white/10'
                             ]"
@@ -107,7 +115,7 @@ defineExpose({ openDonationModal: () => showDonationModal.value = true });
                             <MenuButton 
                                 :class="[
                                     'px-4 py-2 rounded-full transition-all duration-300 font-bold text-sm uppercase tracking-wide flex items-center gap-1.5',
-                                    isScrolled 
+                                    (isScrolled || !transparentOnTop) 
                                         ? 'text-slate-600 hover:text-bakri-teal hover:bg-bakri-teal/5' 
                                         : 'text-white/90 hover:text-white hover:bg-white/10'
                                 ]"
@@ -129,9 +137,10 @@ defineExpose({ openDonationModal: () => showDonationModal.value = true });
                                     <div class="px-4 py-2 mb-1 border-b border-slate-50 dark:border-slate-800">
                                         <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ item.name }}</span>
                                     </div>
-                                    <MenuItem v-for="subItem in item.items" :key="subItem.name" v-slot="{ active }">
-                                        <Link
-                                            :href="subItem.href.startsWith('#') && $page.url !== '/' ? '/' + subItem.href : subItem.href"
+                                    <MenuItem v-for="subItem in item.items" :key="subItem.name" v-slot="{ active }" as="template">
+                                        <component
+                                            :is="subItem.external ? 'a' : Link"
+                                            :href="subItem.external ? subItem.href : (subItem.href.startsWith('#') && $page.url !== '/' ? '/' + subItem.href : subItem.href)"
                                             :class="[
                                                 active ? 'bg-bakri-teal/5 text-bakri-teal' : 'text-slate-700 dark:text-slate-300',
                                                 'flex items-center gap-3 px-4 py-2.5 text-sm font-bold transition-colors uppercase tracking-tight',
@@ -139,7 +148,7 @@ defineExpose({ openDonationModal: () => showDonationModal.value = true });
                                         >
                                             <div class="w-1.5 h-1.5 rounded-full bg-bakri-teal opacity-0 transition-opacity" :class="{'opacity-100': active}"></div>
                                             {{ subItem.name }}
-                                        </Link>
+                                        </component>
                                     </MenuItem>
                                 </MenuItems>
                             </transition>
@@ -161,21 +170,19 @@ defineExpose({ openDonationModal: () => showDonationModal.value = true });
                         <span class="relative">Dana Masjid</span>
                     </button>
 
-                    <!-- Admin Link -->
                     <Link 
                         href="/login" 
                         class="btn btn-square btn-ghost btn-sm rounded-xl ml-1"
-                        :class="isScrolled ? 'text-slate-400 hover:text-emerald-600' : 'text-white/60 hover:text-white'"
+                        :class="(isScrolled || !transparentOnTop) ? 'text-slate-400 hover:text-emerald-600' : 'text-white/60 hover:text-white'"
                     >
                         <UsersIcon class="w-5 h-5" />
                     </Link>
                 </div>
 
-                <!-- Mobile Hamburger -->
                 <button
                     @click="isMobileMenuOpen = !isMobileMenuOpen"
                     class="btn btn-square btn-ghost lg:hidden"
-                    :class="isScrolled ? 'text-slate-900' : 'text-white'"
+                    :class="(isScrolled || !transparentOnTop) ? 'text-slate-900' : 'text-white'"
                 >
                     <svg v-if="!isMobileMenuOpen" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -203,15 +210,16 @@ defineExpose({ openDonationModal: () => showDonationModal.value = true });
                     
                     <div v-else class="space-y-1">
                         <div class="px-4 py-2 text-slate-800 font-bold text-sm">{{ item.name }}</div>
-                        <Link
+                        <component
+                            :is="subItem.external ? 'a' : Link"
                             v-for="subItem in item.items"
                             :key="subItem.name"
-                            :href="subItem.href.startsWith('#') && $page.url !== '/' ? '/' + subItem.href : subItem.href"
+                            :href="subItem.external ? subItem.href : (subItem.href.startsWith('#') && $page.url !== '/' ? '/' + subItem.href : subItem.href)"
                             class="block pl-8 pr-4 py-2 text-sm text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-lg"
                             @click="isMobileMenuOpen = false"
                         >
                             {{ subItem.name }}
-                        </Link>
+                        </component>
                     </div>
                 </template>
                 

@@ -58,6 +58,8 @@ class PublicController extends Controller
     public function structure(): Response
     {
         $committee = CommitteeMember::where('is_active', true)
+            ->whereNotNull('photo_path')
+            ->where('photo_path', '!=', '')
             ->orderBy('division')
             ->orderBy('order')
             ->get()
@@ -227,6 +229,11 @@ class PublicController extends Controller
         return Inertia::render('Public/Jadwal', [
             'prayerTimes' => $this->getPrayerTimes()
         ]);
+    }
+
+    public function kiblat(): Response
+    {
+        return Inertia::render('Public/Kiblat');
     }
 
     public function agenda(): Response

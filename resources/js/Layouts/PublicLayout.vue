@@ -4,6 +4,13 @@ import Navbar from '@/Components/Public/Navbar.vue';
 import MobileBottomNav from '@/Components/Landing/MobileBottomNav.vue';
 import MobileMenuDrawer from '@/Components/Landing/MobileMenuDrawer.vue';
 
+const props = defineProps({
+    transparentNav: {
+        type: Boolean,
+        default: true
+    }
+});
+
 // State management
 const showMobileMenu = ref(false);
 const navbarRef = ref(null);
@@ -34,6 +41,7 @@ defineExpose({
         <!-- Top Navbar -->
         <Navbar 
             ref="navbarRef"
+            :transparent-on-top="transparentNav"
         />
 
         <!-- Main Content Slot -->

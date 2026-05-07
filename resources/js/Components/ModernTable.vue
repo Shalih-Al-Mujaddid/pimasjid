@@ -43,7 +43,7 @@ const isEmpty = computed(() => !props.loading && props.data.length === 0);
 <template>
     <div class="w-full overflow-x-auto scrollbar-thin rounded-xl border border-slate-200">
         <table class="w-full border-collapse">
-            <thead :class="['bg-gradient-islamic text-white', stickyHeader && 'sticky top-0 z-10']">
+            <thead :class="['bg-gradient-to-br from-teal-700 to-teal-900 text-white', stickyHeader && 'sticky top-0 z-10']">
                 <tr>
                     <th
                         v-for="column in columns"

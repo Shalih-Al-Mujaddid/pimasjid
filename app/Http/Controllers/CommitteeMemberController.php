@@ -32,9 +32,14 @@ class CommitteeMemberController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            $result = CloudinaryService::upload($request->file('photo'), 'committee');
-            $validated['photo_path'] = $result['url'];
-            $validated['cloudinary_public_id'] = $result['public_id'];
+            if (env('CLOUDINARY_URL')) {
+                $result = CloudinaryService::upload($request->file('photo'), 'committee');
+                $validated['photo_path'] = $result['url'];
+                $validated['cloudinary_public_id'] = $result['public_id'];
+            } else {
+                $path = $request->file('photo')->store('committee', 'public');
+                $validated['photo_path'] = $path;
+            }
         }
 
         CommitteeMember::create($validated);
@@ -54,14 +59,25 @@ class CommitteeMemberController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            // Delete old photo from Cloudinary
-            if ($committeeMember->cloudinary_public_id) {
-                CloudinaryService::delete($committeeMember->cloudinary_public_id);
+            if (env('CLOUDINARY_URL')) {
+                // Delete old photo from Cloudinary
+                if ($committeeMember->cloudinary_public_id) {
+                    CloudinaryService::delete($committeeMember->cloudinary_public_id);
+                }
+                
+                $result = CloudinaryService::upload($request->file('photo'), 'committee');
+                $validated['photo_path'] = $result['url'];
+                $validated['cloudinary_public_id'] = $result['public_id'];
+            } else {
+                // Delete old local photo
+                if ($committeeMember->photo_path && !str_starts_with($committeeMember->photo_path, 'http')) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($committeeMember->photo_path);
+                }
+                
+                $path = $request->file('photo')->store('committee', 'public');
+                $validated['photo_path'] = $path;
+                $validated['cloudinary_public_id'] = null;
             }
-            
-            $result = CloudinaryService::upload($request->file('photo'), 'committee');
-            $validated['photo_path'] = $result['url'];
-            $validated['cloudinary_public_id'] = $result['public_id'];
         }
 
         $committeeMember->update($validated);

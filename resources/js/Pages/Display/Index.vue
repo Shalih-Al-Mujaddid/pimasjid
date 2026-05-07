@@ -133,24 +133,28 @@ const prayerTimes = computed(() => {
                     </div>
 
                     <!-- Prayer Times List -->
-                    <div class="bg-white rounded-3xl p-5 flex-1 shadow-xl border border-gray-100 overflow-y-auto">
-                        <h3 class="text-lg font-black mb-4 text-gray-800 flex items-center gap-2">
+                    <div class="bg-white rounded-3xl p-5 flex-1 shadow-xl border border-gray-100 overflow-hidden flex flex-col">
+                        <h3 class="text-lg font-black mb-4 text-gray-800 flex items-center gap-2 shrink-0">
                             <svg class="w-6 h-6 text-primary-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/></svg>
                             Jadwal Sholat
                         </h3>
-                        <div class="space-y-2">
-                            <div
-                                v-for="prayer in prayerTimes"
-                                :key="prayer.name"
-                                :class="[
-                                    'flex justify-between items-center p-4 rounded-2xl transition-all duration-300',
-                                    nextPrayer?.name === prayer.name 
-                                        ? 'bg-primary-500 text-white shadow-lg scale-[1.02]' 
-                                        : 'bg-gray-50 hover:bg-gray-100 text-gray-700'
-                                ]"
-                            >
-                                <span class="text-base font-bold">{{ prayer.name }}</span>
-                                <span class="text-xl font-black font-mono">{{ prayer.time }}</span>
+                        <div class="overflow-hidden relative flex-1 flex items-center">
+                            <div class="flex gap-4 animate-marquee whitespace-nowrap">
+                                <template v-for="n in 2" :key="n">
+                                    <div
+                                        v-for="prayer in prayerTimes"
+                                        :key="`${prayer.name}-${n}`"
+                                        :class="[
+                                            'flex justify-between items-center gap-4 p-4 rounded-2xl transition-all duration-300 min-w-[200px]',
+                                            nextPrayer?.name === prayer.name 
+                                                ? 'bg-primary-500 text-white shadow-lg scale-[1.02]' 
+                                                : 'bg-gray-50 hover:bg-gray-100 text-gray-700'
+                                        ]"
+                                    >
+                                        <span class="text-base font-bold">{{ prayer.name }}</span>
+                                        <span class="text-xl font-black font-mono">{{ prayer.time }}</span>
+                                    </div>
+                                </template>
                             </div>
                         </div>
                         

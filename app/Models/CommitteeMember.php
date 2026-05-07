@@ -30,8 +30,11 @@ class CommitteeMember extends Model
         if (!$this->photo_path) {
             return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&size=200&background=059669&color=fff';
         }
-        return str_starts_with($this->photo_path, 'http') 
-            ? $this->photo_path 
-            : asset('storage/' . $this->photo_path);
+
+        if (str_starts_with($this->photo_path, 'http')) {
+            return $this->photo_path;
+        }
+
+        return asset('storage/' . $this->photo_path);
     }
 }

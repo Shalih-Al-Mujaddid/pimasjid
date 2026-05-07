@@ -44,15 +44,14 @@ const formatRupiah = (amount) => {
     <Head title="Info Zakat" />
 
     <PublicLayout>
-        <div class="py-12 pt-24 bg-gradient-to-b from-emerald-50 to-white">
+        <div class="bg-emerald-700 pt-32 pb-16 text-center text-white mb-8">
+            <h1 class="text-4xl font-bold mb-4">🕌 Info Zakat</h1>
+            <p class="text-emerald-100 max-w-2xl mx-auto">
+                Tunaikan kewajiban zakat Anda dengan mudah. Hitung zakat fitrah, mal, dan profesi dengan kalkulator otomatis.
+            </p>
+        </div>
+        <div class="pb-12 bg-white">
             <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                <!-- Hero Section -->
-                <div class="text-center mb-12">
-                    <h1 class="text-4xl font-bold text-slate-900 mb-4">🕌 Zakat</h1>
-                    <p class="text-lg text-slate-600 max-w-2xl mx-auto">
-                        Tunaikan kewajiban zakat Anda dengan mudah. Hitung zakat fitrah, mal, dan profesi dengan kalkulator otomatis.
-                    </p>
-                </div>
 
                 <!-- Zakat Type Selector -->
                 <div class="flex justify-center gap-4 mb-8">

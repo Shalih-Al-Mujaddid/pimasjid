@@ -29,7 +29,7 @@ const getMissionList = (missionText) => {
     <PublicLayout>
 
         <!-- Hero Section -->
-        <div class="relative bg-gradient-islamic pt-32 pb-24 text-center text-white overflow-hidden">
+        <div class="relative bg-gradient-to-br from-primary-700 to-primary-900 pt-32 pb-24 text-center text-white overflow-hidden">
              <!-- Decorative Islamic Pattern Overlay -->
             <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/arabesque.png')]"></div>
             
@@ -37,7 +37,7 @@ const getMissionList = (missionText) => {
                 <div class="block w-fit mx-auto py-1 px-3 rounded-full bg-white/10 backdrop-blur-sm text-emerald-100 text-sm font-medium mb-4 border border-white/20">
                     Tentang Kami
                 </div>
-                <h1 class="text-4xl md:text-5xl font-bold mb-4 font-serif relative inline-block">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 font-serif relative inline-block text-amber-400 drop-shadow-md">
                     {{ about.hero_title }}
                     <span class="absolute -bottom-2 left-1/4 right-1/4 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></span>
                 </h1>

@@ -11,7 +11,7 @@ defineProps({
 <template>
     <Head title="Berita & Kegiatan" />
 
-    <PublicLayout>
+    <PublicLayout :transparent-nav="false">
         <div class="pt-32 pb-16 bg-slate-50 min-h-screen">
              <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 

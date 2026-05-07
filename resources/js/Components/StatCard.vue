@@ -36,7 +36,7 @@ const colorClasses = computed(() => {
         emerald: {
             bg: 'bg-primary-100',
             icon: 'text-primary-600',
-            gradient: 'bg-gradient-islamic',
+            gradient: 'bg-gradient-to-br from-teal-700 to-teal-900',
         },
         amber: {
             bg: 'bg-secondary-100',

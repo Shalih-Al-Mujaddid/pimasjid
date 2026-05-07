@@ -28,7 +28,7 @@ const copyLink = () => {
 <template>
     <Head :title="post.title" />
 
-    <PublicLayout>
+    <PublicLayout :transparent-nav="false">
         <div class="pt-24 pb-16 bg-slate-50 min-h-screen">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 

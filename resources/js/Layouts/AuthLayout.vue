@@ -8,7 +8,7 @@ const page = usePage();
 <template>
     <div class="min-h-screen grid grid-cols-1 lg:grid-cols-2">
         <!-- Left Side: Decorative / Islamic Theme -->
-        <div class="relative hidden lg:flex flex-col items-center justify-center p-10 bg-gradient-islamic overflow-hidden text-white">
+        <div class="relative hidden lg:flex flex-col items-center justify-center p-10 bg-gradient-to-br from-teal-700 to-teal-900 overflow-hidden text-white">
             <!-- Background Patterns -->
             <div class="absolute inset-0 bg-pattern-islamic opacity-20 animate-scale-in"></div>
             <div class="absolute inset-0 bg-black/10"></div>
@@ -46,7 +46,7 @@ const page = usePage();
         <!-- Right Side: Form / Content -->
         <div class="flex flex-col justify-center items-center p-6 bg-white dark:bg-gray-900 relative">
             <!-- Mobile Header (Visible only on small screens) -->
-            <div class="lg:hidden absolute top-0 left-0 right-0 h-48 bg-gradient-islamic">
+            <div class="lg:hidden absolute top-0 left-0 right-0 h-48 bg-gradient-to-br from-teal-700 to-teal-900">
                 <div class="absolute inset-0 bg-pattern-islamic opacity-20"></div>
                  <div class="flex items-center justify-center h-full">
                     <Link href="/">

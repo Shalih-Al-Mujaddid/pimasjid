@@ -199,7 +199,7 @@ const columns = [
                             leave-to="opacity-0 scale-95"
                         >
                             <DialogPanel class="relative transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-all w-full max-w-4xl">
-                                <div class="bg-gradient-islamic px-6 py-4">
+                                <div class="bg-gradient-to-br from-teal-700 to-teal-900 px-6 py-4">
                                     <DialogTitle class="text-xl font-semibold text-white">
                                         Bukti Transaksi
                                     </DialogTitle>
