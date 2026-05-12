@@ -1,6 +1,7 @@
 <script setup>
 import { Link, usePage } from '@inertiajs/vue3';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+import { ArrowLeftIcon } from '@heroicons/vue/24/outline';
 
 const page = usePage();
 </script>
@@ -11,7 +12,7 @@ const page = usePage();
         <div class="relative hidden lg:flex flex-col items-center justify-center p-10 bg-gradient-to-br from-teal-700 to-teal-900 overflow-hidden text-white">
             <!-- Background Patterns -->
             <div class="absolute inset-0 bg-pattern-islamic opacity-20 animate-scale-in"></div>
-            <div class="absolute inset-0 bg-black/10"></div>
+            <div class="absolute inset-0 bg-primary-600/70"></div>
             
             <!-- Content -->
             <div class="relative z-10 w-full max-w-md text-center space-y-6">
@@ -62,6 +63,10 @@ const page = usePage();
             </div>
 
             <div class="w-full max-w-md lg:mt-0 mt-32 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-soft lg:shadow-none animate-fade-in z-10">
+                <Link href="/" class="inline-flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-primary-600 transition-colors mb-8 group">
+                    <ArrowLeftIcon class="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+                    Kembali ke Beranda
+                </Link>
                 <slot />
             </div>
 

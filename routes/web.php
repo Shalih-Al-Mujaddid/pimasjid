@@ -115,6 +115,8 @@ Route::middleware('auth')->group(function () {
         ->name('slides.store');
     Route::post('/slides/{slide}/toggle', [App\Http\Controllers\SlideController::class, 'toggleActive'])
         ->name('slides.toggle');
+    Route::post('/slides/{slide}/update', [App\Http\Controllers\SlideController::class, 'update'])
+        ->name('slides.update');
     Route::delete('/slides/{slide}', [App\Http\Controllers\SlideController::class, 'destroy'])
         ->name('slides.destroy');
     

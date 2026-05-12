@@ -70,8 +70,7 @@ const copyLink = () => {
 
                     <!-- Content Body -->
                     <div class="p-6 md:p-10">
-                        <div class="prose prose-lg prose-emerald max-w-none text-slate-700 leading-relaxed whitespace-pre-line">
-                            {{ post.content }}
+                        <div class="prose prose-lg prose-emerald max-w-none text-slate-700 leading-relaxed" v-html="post.content">
                         </div>
 
                         <!-- Share / Footer -->
