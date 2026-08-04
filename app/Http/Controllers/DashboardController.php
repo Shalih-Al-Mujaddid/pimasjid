@@ -40,6 +40,7 @@ class DashboardController extends Controller
             'super_admin' => 'admin',
             'ketua' => 'executive',
             'bendahara' => 'finance',
+            'sekretaris' => 'sekretaris',
             'marbot' => 'operations',
             default => 'default',
         };
@@ -80,6 +81,13 @@ class DashboardController extends Controller
                 return array_merge($baseStats, [
                     'formattedMonthlyIncome' => 'Rp ' . number_format($this->getMonthlySum('income'), 0, ',', '.'),
                     'formattedMonthlyExpense' => 'Rp ' . number_format($this->getMonthlySum('expense'), 0, ',', '.'),
+                ]);
+
+            case 'sekretaris':
+                return array_merge($baseStats, [
+                    'totalTransactions' => Transaction::count(),
+                    'monthlyIncome' => $this->getMonthlySum('income'),
+                    'monthlyExpense' => $this->getMonthlySum('expense'),
                 ]);
 
             case 'marbot':
@@ -150,6 +158,9 @@ class DashboardController extends Controller
             'ketua' => [
                 'monthlyTrend' => $this->getMonthlyTrends(6),
                 'categoryBreakdown' => $this->getCategoryBreakdown('income'),
+            ],
+            'sekretaris' => [
+                'recentActivities' => $this->getRecentActivities(),
             ],
             'bendahara' => [
                 'monthlyComparison' => $this->getMonthlyTrends(6),
@@ -223,6 +234,37 @@ class DashboardController extends Controller
                 'amounts' => $transactions->pluck('total')->map(fn($t) => (float) $t)->toArray(),
             ];
         });
+    }
+
+    /**
+     * Get recent activities for the secretary dashboard.
+     */
+    private function getRecentActivities()
+    {
+        $activities = [];
+
+        // Transaction activities
+        $recentTransactions = Transaction::with('user')
+            ->approved()
+            ->latest()
+            ->take(5)
+            ->get();
+
+        foreach ($recentTransactions as $tx) {
+            $activities[] = [
+                'id' => 'tx_' . $tx->id,
+                'category' => $tx->type === 'income' ? 'Keuangan' : 'Keuangan',
+                'description' => $tx->description,
+                'user_name' => $tx->user->name ?? 'System',
+                'created_at' => $tx->created_at->format('d M Y, H:i'),
+                'icon' => $tx->type === 'income' ? 'BanknotesIcon' : 'BanknotesIcon',
+            ];
+        }
+
+        // TODO: Add zakat, qurban, and system activities as needed
+        // These are placeholder dummy data for UI development
+
+        return $activities;
     }
 
     /**

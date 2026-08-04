@@ -346,8 +346,43 @@ const formatCurrency = (value) => {
                  </div>
             </div>
 
+            <!-- SEKRETARIS VIEW (Secretary) -->
+            <div v-else-if="dashboardType === 'sekretaris'" class="space-y-6">
+                 <!-- Table Fitur Aktivitas -->
+                 <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div class="p-6 border-b border-slate-100">
+                        <h3 class="text-lg font-bold text-slate-800">Aktivitas</h3>
+                        <p class="text-sm text-slate-500">Daftar aktivitas terbaru (saat ini masih kosong).</p>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-bold">
+                                <tr>
+                                    <th class="px-6 py-4">Tanggal</th>
+                                    <th class="px-6 py-4">Nama Aktivitas</th>
+                                    <th class="px-6 py-4">Kategori</th>
+                                    <th class="px-6 py-4">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <!-- Kosong untuk sekarang -->
+                                <tr>
+                                    <td colspan="4" class="px-6 py-12 text-center text-slate-400">
+                                        <div class="flex flex-col items-center justify-center">
+                                            <ArchiveBoxIcon class="w-12 h-12 mb-3 text-slate-200" />
+                                            <p class="text-sm font-medium">Belum ada data aktivitas.</p>
+                                            <p class="text-xs">Data aktivitas akan muncul di sini nanti.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                 </div>
+            </div>
+
             <!-- MARBOT VIEW (Operations) -->
-            <div v-if="dashboardType === 'operations'" class="space-y-6">
+            <div v-else-if="dashboardType === 'operations'" class="space-y-6">
                 <!-- Status Header -->
                  <div class="bg-slate-900 text-white rounded-2xl p-8 shadow-xl relative overflow-hidden">
                     <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">

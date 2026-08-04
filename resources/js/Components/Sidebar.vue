@@ -16,7 +16,8 @@ import {
     UsersIcon,
     PaintBrushIcon,
     GiftIcon,
-    CakeIcon
+    CakeIcon,
+    AcademicCapIcon
 } from '@heroicons/vue/24/outline';
 
 const page = usePage();
@@ -68,6 +69,7 @@ const menuGroups = computed(() => {
                 { name: 'Jadwal Jumat', route: 'friday-schedules.index', icon: CalendarDaysIcon, visible: true },
                 { name: 'Kelola Agenda', route: 'agendas.index', icon: CalendarIcon, visible: true },
                 { name: 'Kelola Slide TV', route: 'slides.index', icon: PresentationChartBarIcon, visible: true },
+                { name: 'Kelola TPA', route: 'admin.tpa.index', icon: AcademicCapIcon, visible: true },
                 { name: 'Inventaris Aset', route: 'assets.index', icon: ArchiveBoxIcon, visible: true },
                 { name: 'TV Display', route: 'display.index', icon: TvIcon, visible: true, external: true }
             ]

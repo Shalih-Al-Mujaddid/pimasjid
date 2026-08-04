@@ -14,10 +14,7 @@ import {
 } from '@heroicons/vue/24/outline';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 
-// Define layout
-defineOptions({
-    layout: PublicLayout
-});
+
 
 const props = defineProps({
     prayerTimes: Object,
@@ -110,8 +107,6 @@ watch(currentPrayerTimes, (newTimes) => {
 </script>
 
 <template>
-    <Head title="Pusat Ibadah & Kegiatan Umat" />
-
     <PublicLayout ref="layoutRef">
         <!-- 1. Hero Section -->
         <div class="relative min-h-[700px] flex items-center justify-center overflow-hidden">
@@ -425,7 +420,13 @@ watch(currentPrayerTimes, (newTimes) => {
                         </div>
                         <h3 class="text-xl font-black text-slate-800 dark:text-white mb-4 uppercase tracking-tighter leading-none">TPA / Tahfidz</h3>
                         <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-8">Mencetak generasi rabbani melalui pendidikan Al-Quran yang intensif dan berjenjang.</p>
-                        <a href="#" class="text-bakri-teal font-black text-[10px] uppercase tracking-widest flex items-center gap-1 group-hover:gap-2 transition-all">Daftar <ArrowRightIcon class="w-3 h-3" /></a>
+<Link
+    :href="route('public.tpa.register')"
+    class="text-persian-navy font-black text-[10px] uppercase tracking-widest flex items-center gap-1 group-hover:gap-2 transition-all"
+>
+    Daftar
+    <ArrowRightIcon class="w-3 h-3" />
+</Link>
                     </div>
 
                     <!-- Modern Service Card 4 -->

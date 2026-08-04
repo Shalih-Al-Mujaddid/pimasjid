@@ -46,6 +46,10 @@ Route::get('/info/qurban', function () {
 Route::post('/info/qurban/register', [App\Http\Controllers\QurbanController::class, 'publicRegister'])
     ->name('public.qurban.register');
 
+// Public TPA Registration
+Route::get('/tpa/daftar', [App\Http\Controllers\TpaRegistrationController::class, 'publicIndex'])->name('public.tpa.register');
+Route::post('/tpa/daftar', [App\Http\Controllers\TpaRegistrationController::class, 'store'])->name('public.tpa.register.store');
+
 // Public Financial Transparency
 Route::get('/keuangan', [App\Http\Controllers\TransactionController::class, 'publicIndex'])
     ->name('keuangan.index');
@@ -131,6 +135,14 @@ Route::middleware('auth')->group(function () {
 
     // Friday Schedule Management
     Route::resource('friday-schedules', App\Http\Controllers\FridayScheduleController::class);
+
+    // TPA Management (Marbot/Super Admin)
+    Route::prefix('admin/tpa')->middleware('can:manage_operations')->group(function () {
+        Route::get('/', [App\Http\Controllers\TpaRegistrationController::class, 'index'])->name('admin.tpa.index');
+        Route::patch('/{tpa}/status', [App\Http\Controllers\TpaRegistrationController::class, 'updateStatus'])->name('admin.tpa.status');
+        Route::put('/{tpa}', [App\Http\Controllers\TpaRegistrationController::class, 'update'])->name('admin.tpa.update');
+        Route::delete('/{tpa}', [App\Http\Controllers\TpaRegistrationController::class, 'destroy'])->name('admin.tpa.destroy');
+    });
 
     // Committee Member Management (Super Admin only for now, or maybe Ketua too? Let's stick to SA as per request)
     Route::resource('committee-members', App\Http\Controllers\CommitteeMemberController::class)
