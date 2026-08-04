@@ -17,7 +17,7 @@ import {
 
 const props = defineProps({
     students: {
-        type: Array,
+        type: [Array, Object],
         default: () => []
     }
 });
@@ -50,12 +50,17 @@ const selectedClassFilter = ref('Semua Kelas');
 const classes = ['Semua Kelas', 'Iqro 1-3', 'Iqro 4-6', 'Al-Quran', 'Tahfidz'];
 const searchQuery = ref('');
 
-const mockStudents = computed(() => props.students || []);
+const mockStudents = computed(() => {
+    if (props.students && props.students.data) {
+        return props.students.data;
+    }
+    return props.students || [];
+});
 
 const filteredStudents = computed(() => {
     return mockStudents.value.filter(s => {
         const matchKelas = selectedClassFilter.value === 'Semua Kelas' || s.kelas === selectedClassFilter.value;
-        const matchNama = s.nama.toLowerCase().includes(searchQuery.value.toLowerCase());
+        const matchNama = s.nama_anak ? s.nama_anak.toLowerCase().includes(searchQuery.value.toLowerCase()) : false;
         return matchKelas && matchNama;
     });
 });
@@ -285,14 +290,14 @@ const jadwalKelas = [
                                 <div v-for="santri in filteredStudents" :key="santri.id" class="flex gap-4 p-4 sm:p-5 border border-slate-100 rounded-xl hover:border-bakri-teal/30 hover:bg-bakri-teal/[0.02] transition-all duration-200">
                                     <div class="w-10 h-10 shrink-0 rounded-full flex items-center justify-center font-bold text-sm text-white"
                                         :class="santri.jenis_kelamin === 'L' ? 'bg-bakri-teal' : 'bg-rose-400'">
-                                        {{ santri.nama.charAt(0) }}
+                                        {{ santri.nama_anak ? santri.nama_anak.charAt(0) : 'S' }}
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center justify-between gap-2 mb-0.5">
-                                            <h4 class="font-semibold text-slate-800 text-sm truncate">{{ santri.nama }}</h4>
-                                            <span class="text-[10px] text-slate-400 shrink-0">{{ santri.update_terakhir }}</span>
+                                            <h4 class="font-semibold text-slate-800 text-sm truncate">{{ santri.nama_anak }}</h4>
+                                            <span class="text-[10px] text-slate-400 shrink-0"></span>
                                         </div>
-                                        <p class="text-xs text-slate-400 mb-3">{{ santri.detail_kelas }} &bull; {{ santri.ustadz }}</p>
+                                        <p class="text-xs text-slate-400 mb-3">{{ santri.kelas }} &bull; {{ santri.ustadz || 'Belum ditentukan' }}</p>
                                         <div class="bg-slate-50 border-l-2 border-bakri-teal pl-3 pr-2 py-2 rounded-r-lg text-xs text-slate-600 italic leading-relaxed">
                                             "{{ santri.progres }}"
                                         </div>
