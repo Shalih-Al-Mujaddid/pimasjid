@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kajian;
-use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class KajianController extends Controller
@@ -88,16 +88,9 @@ class KajianController extends Controller
 
     public function store(Request $request)
 {
-    dd([
-        'all' => $request->all(),
-        'files' => $request->allFiles(),
-        'banner' => $request->file('banner_image'),
-        'ustaz' => $request->file('ustaz_image'),
-    ]);
-
     Gate::authorize('manage_operations');
 
-    $validated = $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'theme' => 'nullable|string|max:255',
             'ustaz_name' => 'required|string|max:255',
@@ -116,23 +109,11 @@ class KajianController extends Controller
         $data = collect($validated)->except(['banner_image', 'ustaz_image'])->toArray();
 
         if ($request->hasFile('banner_image')) {
-            if (env('CLOUDINARY_URL')) {
-                $result = CloudinaryService::upload($request->file('banner_image'), 'kajian_banners');
-                $data['banner'] = $result['url'];
-                $data['banner_public_id'] = $result['public_id'];
-            } else {
-                $data['banner'] = $request->file('banner_image')->store('kajian_banners', 'public');
-            }
+            $data['banner'] = $request->file('banner_image')->store('kajian_banners', 'public');
         }
 
         if ($request->hasFile('ustaz_image')) {
-            if (env('CLOUDINARY_URL')) {
-                $result = CloudinaryService::upload($request->file('ustaz_image'), 'kajian_ustaz');
-                $data['ustaz_photo'] = $result['url'];
-                $data['ustaz_photo_public_id'] = $result['public_id'];
-            } else {
-                $data['ustaz_photo'] = $request->file('ustaz_image')->store('kajian_ustaz', 'public');
-            }
+            $data['ustaz_photo'] = $request->file('ustaz_image')->store('kajian_ustaz', 'public');
         }
 
         Kajian::create($data);
@@ -163,35 +144,17 @@ class KajianController extends Controller
         $data = collect($validated)->except(['banner_image', 'ustaz_image'])->toArray();
 
         if ($request->hasFile('banner_image')) {
-            if (env('CLOUDINARY_URL')) {
-                if ($kajian->banner_public_id) {
-                    CloudinaryService::delete($kajian->banner_public_id);
-                }
-                $result = CloudinaryService::upload($request->file('banner_image'), 'kajian_banners');
-                $data['banner'] = $result['url'];
-                $data['banner_public_id'] = $result['public_id'];
-            } else {
-                if ($kajian->banner && ! str_starts_with($kajian->banner, 'http')) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete($kajian->banner);
-                }
-                $data['banner'] = $request->file('banner_image')->store('kajian_banners', 'public');
+            if ($kajian->banner) {
+                Storage::disk('public')->delete($kajian->banner);
             }
+            $data['banner'] = $request->file('banner_image')->store('kajian_banners', 'public');
         }
 
         if ($request->hasFile('ustaz_image')) {
-            if (env('CLOUDINARY_URL')) {
-                if ($kajian->ustaz_photo_public_id) {
-                    CloudinaryService::delete($kajian->ustaz_photo_public_id);
-                }
-                $result = CloudinaryService::upload($request->file('ustaz_image'), 'kajian_ustaz');
-                $data['ustaz_photo'] = $result['url'];
-                $data['ustaz_photo_public_id'] = $result['public_id'];
-            } else {
-                if ($kajian->ustaz_photo && ! str_starts_with($kajian->ustaz_photo, 'http')) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete($kajian->ustaz_photo);
-                }
-                $data['ustaz_photo'] = $request->file('ustaz_image')->store('kajian_ustaz', 'public');
+            if ($kajian->ustaz_photo) {
+                Storage::disk('public')->delete($kajian->ustaz_photo);
             }
+            $data['ustaz_photo'] = $request->file('ustaz_image')->store('kajian_ustaz', 'public');
         }
 
         $kajian->update($data);
@@ -203,18 +166,9 @@ class KajianController extends Controller
     {
         Gate::authorize('manage_operations');
 
-        if (env('CLOUDINARY_URL')) {
-            if ($kajian->banner_public_id) {
-                CloudinaryService::delete($kajian->banner_public_id);
-            }
-            if ($kajian->ustaz_photo_public_id) {
-                CloudinaryService::delete($kajian->ustaz_photo_public_id);
-            }
-        } else {
-            // Hapus file lokal
-            if ($kajian->banner) \Illuminate\Support\Facades\Storage::disk('public')->delete($kajian->banner);
-            if ($kajian->ustaz_photo) \Illuminate\Support\Facades\Storage::disk('public')->delete($kajian->ustaz_photo);
-        }
+        // Hapus file lokal
+        if ($kajian->banner) Storage::disk('public')->delete($kajian->banner);
+        if ($kajian->ustaz_photo) Storage::disk('public')->delete($kajian->ustaz_photo);
 
         $kajian->delete();
 
