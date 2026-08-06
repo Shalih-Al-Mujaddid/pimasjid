@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -23,6 +22,10 @@ Route::get('/ibadah/kiblat', [App\Http\Controllers\PublicController::class, 'kib
 Route::get('/galeri', [App\Http\Controllers\PublicController::class, 'galeri'])->name('public.galeri');
 Route::get('/berita', [App\Http\Controllers\PublicController::class, 'berita'])->name('public.berita');
 Route::get('/berita/{post:slug}', [App\Http\Controllers\PublicController::class, 'post'])->name('public.post');
+
+// Public Kajian Rutin
+Route::get('/kajian', [App\Http\Controllers\KajianController::class, 'publicIndex'])->name('public.kajian.index');
+Route::get('/kajian/{kajian}', [App\Http\Controllers\KajianController::class, 'publicShow'])->name('public.kajian.show');
 
 // Public Al-Quran
 Route::get('/quran', function () {
@@ -72,7 +75,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
+
     // User Management (super_admin only)
     Route::get('/users', [App\Http\Controllers\UserController::class, 'index'])
         ->name('users.index');
@@ -88,12 +91,12 @@ Route::middleware('auth')->group(function () {
     // Global Settings
     Route::get('/settings', [App\Http\Controllers\SettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [App\Http\Controllers\SettingController::class, 'update'])->name('settings.update');
-    
+
     // Component Showcase
     Route::get('/components-showcase', function () {
         return Inertia::render('ComponentShowcase');
     })->name('components.showcase');
-    
+
     // Transaction Management
     Route::get('/transactions', [App\Http\Controllers\TransactionController::class, 'index'])
         ->name('transactions.index');
@@ -103,7 +106,7 @@ Route::middleware('auth')->group(function () {
         ->name('transactions.store');
     Route::delete('/transactions/{id}', [App\Http\Controllers\TransactionController::class, 'destroy'])
         ->name('transactions.destroy');
-    
+
     // Approval System (Ketua only, enforced by Gates)
     Route::get('/approvals', [App\Http\Controllers\ApprovalController::class, 'index'])
         ->name('approvals.index');
@@ -111,7 +114,7 @@ Route::middleware('auth')->group(function () {
         ->name('approvals.approve');
     Route::post('/approvals/{transaction}/reject', [App\Http\Controllers\ApprovalController::class, 'reject'])
         ->name('approvals.reject');
-    
+
     // Slides Management (Marbot/Super Admin)
     Route::get('/slides', [App\Http\Controllers\SlideController::class, 'index'])
         ->name('slides.index');
@@ -123,7 +126,7 @@ Route::middleware('auth')->group(function () {
         ->name('slides.update');
     Route::delete('/slides/{slide}', [App\Http\Controllers\SlideController::class, 'destroy'])
         ->name('slides.destroy');
-    
+
     // Assets Management (Marbot/Super Admin)
     Route::get('/assets/export', [App\Http\Controllers\AssetController::class, 'export'])
         ->name('assets.export');
@@ -144,6 +147,16 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{tpa}', [App\Http\Controllers\TpaRegistrationController::class, 'destroy'])->name('admin.tpa.destroy');
     });
 
+    // Kajian Rutin Management (Marbot/Super Admin)
+    Route::resource('admin/kajian', App\Http\Controllers\KajianController::class)->except(['create', 'show', 'edit'])
+        ->names([
+            'index' => 'admin.kajian.index',
+            'store' => 'admin.kajian.store',
+            'update' => 'admin.kajian.update',
+            'destroy' => 'admin.kajian.destroy',
+        ])
+        ->middleware('can:manage_operations');
+
     // Committee Member Management (Super Admin only for now, or maybe Ketua too? Let's stick to SA as per request)
     Route::resource('committee-members', App\Http\Controllers\CommitteeMemberController::class)
         ->middleware('can:manage_users'); // Using manage_users (Super Admin) permission
@@ -151,7 +164,7 @@ Route::middleware('auth')->group(function () {
     // Posts Management (Berita & Kegiatan)
     Route::resource('posts', App\Http\Controllers\PostController::class)
         ->middleware('can:manage_posts');
-    
+
     // Zakat Management
     Route::prefix('zakat')->group(function () {
         Route::get('/', [App\Http\Controllers\ZakatController::class, 'index'])->name('zakat.index');
@@ -163,7 +176,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/reports', [App\Http\Controllers\ZakatController::class, 'reports'])->name('zakat.reports');
         Route::get('/export', [App\Http\Controllers\ZakatController::class, 'export'])->name('zakat.export'); // New export route
     });
-    
+
     // Qurban Management
     Route::prefix('qurban')->group(function () {
         Route::get('/', [App\Http\Controllers\QurbanController::class, 'index'])->name('qurban.index');

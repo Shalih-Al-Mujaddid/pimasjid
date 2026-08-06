@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\TpaStudentPublicResource;
-use Illuminate\Http\Request;
-
 use App\Models\TpaRegistration;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
@@ -22,7 +21,7 @@ class TpaRegistrationController extends Controller
 
         // Menggunakan API Resource untuk transformasi data yang lebih bersih
         return Inertia::render('Public/TpaRegister', [
-            'students' => TpaStudentPublicResource::collection($students)
+            'students' => TpaStudentPublicResource::collection($students),
         ]);
     }
 
@@ -58,7 +57,7 @@ class TpaRegistrationController extends Controller
         $registrations = TpaRegistration::orderBy('created_at', 'desc')->get();
 
         return Inertia::render('Admin/Tpa/Index', [
-            'registrations' => $registrations
+            'registrations' => $registrations,
         ]);
     }
 
@@ -104,7 +103,7 @@ class TpaRegistrationController extends Controller
         // Set approved_at jika status berubah menjadi 'approved' dan sebelumnya bukan 'approved'
         if ($validated['status'] === 'approved' && $tpa->status !== 'approved') {
             $updateData['approved_at'] = now();
-        } 
+        }
         // Jika status diubah kembali ke pending/rejected, approved_at akan di-set null di model.
 
         $tpa->update($updateData);

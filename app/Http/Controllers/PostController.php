@@ -19,7 +19,7 @@ class PostController extends Controller
             ->get();
 
         return Inertia::render('Posts/Index', [
-            'posts' => $posts
+            'posts' => $posts,
         ]);
     }
 
@@ -39,17 +39,21 @@ class PostController extends Controller
 
         $imagePath = null;
         $cloudinaryPublicId = null;
-        
+
         if ($request->hasFile('photo')) {
-            $result = CloudinaryService::upload($request->file('photo'), 'posts');
-            $imagePath = $result['url'];
-            $cloudinaryPublicId = $result['public_id'];
+            if (env('CLOUDINARY_URL')) {
+                $result = CloudinaryService::upload($request->file('photo'), 'posts');
+                $imagePath = $result['url'];
+                $cloudinaryPublicId = $result['public_id'];
+            } else {
+                $imagePath = $request->file('photo')->store('posts', 'public');
+            }
         }
 
         $excerpt = $validated['excerpt'];
         if (empty($excerpt)) {
             $excerpt = strip_tags($validated['content']);
-            $excerpt = mb_substr($excerpt, 0, 160) . (mb_strlen($excerpt) > 160 ? '...' : '');
+            $excerpt = mb_substr($excerpt, 0, 160).(mb_strlen($excerpt) > 160 ? '...' : '');
         }
 
         Post::create([
@@ -81,33 +85,39 @@ class PostController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            // Delete old from Cloudinary
-            if ($post->cloudinary_public_id) {
-                CloudinaryService::delete($post->cloudinary_public_id);
+            if (env('CLOUDINARY_URL')) {
+                // Delete old from Cloudinary
+                if ($post->cloudinary_public_id) {
+                    CloudinaryService::delete($post->cloudinary_public_id);
+                }
+                $result = CloudinaryService::upload($request->file('photo'), 'posts');
+                $post->image_path = $result['url'];
+                $post->cloudinary_public_id = $result['public_id'];
+            } else {
+                if ($post->image_path && ! str_starts_with($post->image_path, 'http')) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($post->image_path);
+                }
+                $post->image_path = $request->file('photo')->store('posts', 'public');
             }
-            
-            $result = CloudinaryService::upload($request->file('photo'), 'posts');
-            $post->image_path = $result['url'];
-            $post->cloudinary_public_id = $result['public_id'];
         }
 
         $post->title = $validated['title'];
         $post->excerpt = $validated['excerpt'];
-        
+
         if (empty($post->excerpt)) {
             $excerpt = strip_tags($validated['content']);
-            $post->excerpt = mb_substr($excerpt, 0, 160) . (mb_strlen($excerpt) > 160 ? '...' : '');
+            $post->excerpt = mb_substr($excerpt, 0, 160).(mb_strlen($excerpt) > 160 ? '...' : '');
         }
 
         $post->content = $validated['content'];
         $post->is_published = $validated['is_published'];
-        
+
         if (isset($validated['published_at'])) {
             $post->published_at = $validated['published_at'];
-        } elseif ($post->is_published && !$post->published_at) {
+        } elseif ($post->is_published && ! $post->published_at) {
             $post->published_at = now();
         }
-        
+
         $post->save();
 
         return redirect()->back()->with('success', 'Berita berhasil diperbarui.');
@@ -118,11 +128,15 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        // Delete from Cloudinary
-        if ($post->cloudinary_public_id) {
-            CloudinaryService::delete($post->cloudinary_public_id);
+        if (env('CLOUDINARY_URL')) {
+            if ($post->cloudinary_public_id) {
+                CloudinaryService::delete($post->cloudinary_public_id);
+            }
+        } else {
+            // Delete local file
+            if ($post->image_path) \Illuminate\Support\Facades\Storage::disk('public')->delete($post->image_path);
         }
-        
+
         $post->delete();
 
         return redirect()->back()->with('success', 'Berita berhasil dihapus.');

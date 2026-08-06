@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Transaction;
 use App\Models\Slide;
+use App\Models\Transaction;
 use App\Models\Wishlist;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -19,17 +18,17 @@ class DisplayController extends Controller
     public function index(): Response
     {
         $now = now();
-        
+
         // Get today's prayer times from API
         $todayPrayerTimes = $this->getPrayerTimes();
-        
+
         // Calculate next prayer
         $nextPrayer = $this->getNextPrayer($todayPrayerTimes, $now);
-        
+
         // Check if today is Friday
         $isFriday = $now->isFriday();
         $fridaySchedule = null;
-        
+
         if ($isFriday) {
             // Get Friday prayer schedule (mock for now, can be replaced with DB)
             $fridaySchedule = [
@@ -39,40 +38,40 @@ class DisplayController extends Controller
                 'muadzin' => 'Sdr. Ali Rahman',
             ];
         }
-        
+
         // Get active slides ordered by sequence
         $slides = Slide::active()
             ->ordered()
             ->get()
-            ->map(fn($slide) => [
+            ->map(fn ($slide) => [
                 'id' => $slide->id,
                 'title' => $slide->title,
                 'content' => $slide->content,
                 'image_url' => $slide->image_url,
             ]);
-        
+
         // Get recent verified donations (last 10)
         $recentDonations = Transaction::income()
             ->latest()
             ->take(10)
             ->get()
-            ->map(fn($transaction) => [
+            ->map(fn ($transaction) => [
                 'id' => $transaction->id,
                 'category' => $transaction->category,
                 'amount' => $transaction->formatted_amount,
                 'date' => $transaction->date->format('d M Y'),
             ]);
-        
+
         // Monthly financial stats
         $monthlyIncome = Transaction::income()->thisMonth()->sum('amount');
         $monthlyExpense = Transaction::expense()->thisMonth()->sum('amount');
-        
+
         // Active wishlists with progress
         $wishlists = Wishlist::active()
             ->latest()
             ->take(3)
             ->get()
-            ->map(fn($wishlist) => [
+            ->map(fn ($wishlist) => [
                 'id' => $wishlist->id,
                 'item_name' => $wishlist->item_name,
                 'target_qty' => $wishlist->target_qty,
@@ -81,7 +80,7 @@ class DisplayController extends Controller
                 'formatted_total_target' => $wishlist->formatted_total_target,
                 'formatted_total_fulfilled' => $wishlist->formatted_total_fulfilled,
             ]);
-        
+
         return Inertia::render('Display/Index', [
             'currentTime' => $now->toIso8601String(),
             'todayPrayerTimes' => $todayPrayerTimes ? [
@@ -107,7 +106,7 @@ class DisplayController extends Controller
             'wishlists' => $wishlists,
         ]);
     }
-    
+
     /**
      * Get prayer times from API with fallback
      */
@@ -117,7 +116,7 @@ class DisplayController extends Controller
             // Get location from settings
             $latitude = setting('location_latitude', '-6.200000');
             $longitude = setting('location_longitude', '106.816666');
-            
+
             $date = now()->format('d-m-Y');
             $response = Http::timeout(3)->get("http://api.aladhan.com/v1/timings/$date", [
                 'latitude' => $latitude,
@@ -127,6 +126,7 @@ class DisplayController extends Controller
 
             if ($response->successful()) {
                 $timings = $response->json('data.timings');
+
                 return [
                     'Subuh' => $timings['Fajr'],
                     'Sunrise' => $timings['Sunrise'],
@@ -134,7 +134,7 @@ class DisplayController extends Controller
                     'Ashar' => $timings['Asr'],
                     'Maghrib' => $timings['Maghrib'],
                     'Isya' => $timings['Isha'],
-                    'date' => now()->translatedFormat('l, d F Y')
+                    'date' => now()->translatedFormat('l, d F Y'),
                 ];
             }
         } catch (\Exception $e) {
@@ -149,19 +149,19 @@ class DisplayController extends Controller
             'Ashar' => '15:20',
             'Maghrib' => '18:10',
             'Isya' => '19:25',
-            'date' => now()->translatedFormat('l, d F Y')
+            'date' => now()->translatedFormat('l, d F Y'),
         ];
     }
-    
+
     /**
      * Calculate the next prayer from current time.
      */
     private function getNextPrayer(?array $prayerTimes, Carbon $now): ?array
     {
-        if (!$prayerTimes) {
+        if (! $prayerTimes) {
             return null;
         }
-        
+
         $prayers = [
             'Subuh' => $prayerTimes['Subuh'],
             'Dhuhr' => $prayerTimes['Dzuhur'],
@@ -169,13 +169,13 @@ class DisplayController extends Controller
             'Maghrib' => $prayerTimes['Maghrib'],
             'Isha' => $prayerTimes['Isya'],
         ];
-        
+
         $today = $now->format('Y-m-d');
-        
+
         foreach ($prayers as $name => $time) {
             // Create Carbon instance for prayer time today
             $prayerDateTime = Carbon::parse("$today $time");
-            
+
             // If prayer time is in the future
             if ($now->lt($prayerDateTime)) {
                 return [
@@ -185,7 +185,7 @@ class DisplayController extends Controller
                 ];
             }
         }
-        
+
         // If all prayers have passed, next prayer is tomorrow's Subuh
         return [
             'name' => 'Subuh',
@@ -193,13 +193,14 @@ class DisplayController extends Controller
             'tomorrow' => true,
         ];
     }
-    
+
     private function getNextFriday()
     {
         $now = now();
         if ($now->dayOfWeek === Carbon::FRIDAY) {
             return $now->translatedFormat('d F Y');
         }
+
         return $now->next(Carbon::FRIDAY)->translatedFormat('d F Y');
     }
 }

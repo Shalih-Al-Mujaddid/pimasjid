@@ -38,16 +38,17 @@ class TpaRegistration extends Model
             }
         });
     }
+
     public function getPhotoUrlAttribute()
     {
-        if (!$this->photo_path) {
-            return 'https://ui-avatars.com/api/?name=' . urlencode($this->nama_anak) . '&size=200&background=059669&color=fff';
+        if (! $this->photo_path) {
+            return 'https://ui-avatars.com/api/?name='.urlencode($this->nama_anak).'&size=200&background=059669&color=fff';
         }
 
         if (str_starts_with($this->photo_path, 'http')) {
             return $this->photo_path;
         }
 
-        return asset('storage/' . $this->photo_path);
+        return asset('storage/'.$this->photo_path);
     }
 }

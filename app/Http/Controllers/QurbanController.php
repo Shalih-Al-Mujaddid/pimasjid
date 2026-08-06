@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\QurbanExport;
 use App\Models\Qurban;
 use App\Models\QurbanDistribution;
+use App\Models\Setting;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Models\Setting;
-use App\Exports\QurbanExport;
 use Maatwebsite\Excel\Facades\Excel;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Str;
 
 class QurbanController extends Controller
 {
@@ -52,9 +51,9 @@ class QurbanController extends Controller
         // Search
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('participant_name', 'like', "%{$search}%")
-                  ->orWhere('participant_nik', 'like', "%{$search}%");
+                    ->orWhere('participant_nik', 'like', "%{$search}%");
             });
         }
 
@@ -65,7 +64,7 @@ class QurbanController extends Controller
 
         // Summary statistics
         $currentYear = $request->year ?? now()->year;
-        
+
         $individualPrice = Qurban::byYear($currentYear)->where('is_shared', false)->sum('animal_price');
         $sharedPrice = Qurban::byYear($currentYear)
             ->where('is_shared', true)
@@ -78,7 +77,7 @@ class QurbanController extends Controller
             'total_participants' => Qurban::byYear($currentYear)->count(),
             'total_price' => $individualPrice + $sharedPrice,
             'kambing_count' => Qurban::byYear($currentYear)->byAnimalType('kambing')->count(),
-            'sapi_count' => Qurban::byYear($currentYear)->byAnimalType('sapi')->where('is_shared', false)->count() + 
+            'sapi_count' => Qurban::byYear($currentYear)->byAnimalType('sapi')->where('is_shared', false)->count() +
                            Qurban::byYear($currentYear)->byAnimalType('sapi')->where('is_shared', true)->distinct('share_group_id')->count('share_group_id'),
             'registered_count' => Qurban::byYear($currentYear)->byStatus('registered')->count(),
             'paid_count' => Qurban::byYear($currentYear)->byStatus('paid')->count(),
@@ -238,14 +237,15 @@ class QurbanController extends Controller
     public function distribute(): Response
     {
         $currentYear = now()->year;
-        
+
         // Get slaughtered qurbans (ready for distribution)
         $availableQurbans = Qurban::byYear($currentYear)
             ->whereIn('status', ['slaughtered', 'distributed'])
             ->with(['distributions'])
             ->get()
-            ->map(function($qurban) {
+            ->map(function ($qurban) {
                 $totalDistributed = $qurban->distributions->sum('meat_kg');
+
                 return [
                     'id' => $qurban->id,
                     'participant_name' => $qurban->participant_name,
@@ -256,15 +256,15 @@ class QurbanController extends Controller
                     'share_info' => $qurban->shareInfo,
                 ];
             });
-        
+
         // Distribution history
         $distributions = QurbanDistribution::with(['qurban', 'distributedBy'])
-            ->whereHas('qurban', function($q) use ($currentYear) {
+            ->whereHas('qurban', function ($q) use ($currentYear) {
                 $q->byYear($currentYear);
             })
             ->latest()
             ->paginate(20);
-        
+
         return Inertia::render('Qurban/Distribute', [
             'available_qurbans' => $availableQurbans,
             'distributions' => $distributions,
@@ -313,21 +313,21 @@ class QurbanController extends Controller
     public function reports(Request $request): Response
     {
         $year = $request->input('year', now()->year);
-        
+
         // Summary
         $qurbans = Qurban::byYear($year)->get();
-        
+
         // Calculate totals handling shared groups correctly
         $totalParticipants = $qurbans->count();
-        
+
         $totalPrice = 0;
         $totalWeight = 0;
-        
+
         // Individual
         $individual = $qurbans->where('is_shared', false);
         $totalPrice += $individual->sum('animal_price');
         $totalWeight += $individual->sum('animal_weight');
-        
+
         // Shared
         $sharedGroups = $qurbans->where('is_shared', true)->groupBy('share_group_id');
         foreach ($sharedGroups as $group) {
@@ -336,46 +336,46 @@ class QurbanController extends Controller
                 $totalWeight += $group->max('animal_weight');
             }
         }
-        
+
         // Breakdown by Animal Type
         $byAnimalType = $qurbans->groupBy('animal_type')->map(function ($items, $type) {
             $count = 0;
             $price = 0;
-            
+
             // Individual
             $indiv = $items->where('is_shared', false);
             $count += $indiv->count();
             $price += $indiv->sum('animal_price');
-            
+
             // Shared
             $shared = $items->where('is_shared', true)->groupBy('share_group_id');
             $count += $shared->count(); // Count animals (unique groups)
-            
+
             foreach ($shared as $g) {
                 if ($g->isNotEmpty()) {
                     $price += $g->avg('animal_price');
                 }
             }
-            
+
             return [
                 'animal_type' => ucfirst($type),
                 'count' => $count,
-                'total_price' => $price
+                'total_price' => $price,
             ];
         })->values();
-        
+
         // Distribution stats
-        $totalDistributed = QurbanDistribution::whereHas('qurban', function($q) use ($year) {
+        $totalDistributed = QurbanDistribution::whereHas('qurban', function ($q) use ($year) {
             $q->byYear($year);
         })->sum('meat_kg');
-        
-        $distributionByType = QurbanDistribution::whereHas('qurban', function($q) use ($year) {
+
+        $distributionByType = QurbanDistribution::whereHas('qurban', function ($q) use ($year) {
             $q->byYear($year);
         })
             ->selectRaw('recipient_type, SUM(meat_kg) as total_kg')
             ->groupBy('recipient_type')
             ->get();
-        
+
         return Inertia::render('Qurban/Reports', [
             'year' => $year,
             'summary' => [
@@ -397,22 +397,22 @@ class QurbanController extends Controller
     {
         $year = $request->input('year', now()->year);
         $type = $request->input('type', 'pdf');
-        
+
         $qurbans = Qurban::byYear($year)->orderByRaw('share_group_id DESC, share_position ASC, created_at DESC')->get();
-        
+
         // Calculate totals handling shared groups correctly (Same logic as reports)
         // Note: For DRY, this should be refactored to a service, but for now copying ensures stability
-        
+
         $totalParticipants = $qurbans->count(); // Use local collection count
-        
+
         $totalPrice = 0;
         $totalWeight = 0;
-        
+
         // Individual
         $individual = $qurbans->where('is_shared', false);
         $totalPrice += $individual->sum('animal_price');
         $totalWeight += $individual->sum('animal_weight');
-        
+
         // Shared
         $sharedGroups = $qurbans->where('is_shared', true)->groupBy('share_group_id');
         foreach ($sharedGroups as $group) {
@@ -421,27 +421,27 @@ class QurbanController extends Controller
                 $totalWeight += $group->max('animal_weight');
             }
         }
-        
+
         // Breakdown by Animal Type
         $byAnimalType = $qurbans->groupBy('animal_type')->map(function ($items, $type) {
             $count = 0;
             $price = 0;
-            
+
             // Individual
             $indiv = $items->where('is_shared', false);
             $count += $indiv->count();
             $price += $indiv->sum('animal_price');
-            
+
             // Shared
             $shared = $items->where('is_shared', true)->groupBy('share_group_id');
-            $count += $shared->count(); 
-            
+            $count += $shared->count();
+
             $details = [];
             if ($indiv->count() > 0) {
-                $details[] = $indiv->count() . ' Individu';
+                $details[] = $indiv->count().' Individu';
             }
             if ($shared->count() > 0) {
-                $details[] = $shared->count() . ' Grup Patungan';
+                $details[] = $shared->count().' Grup Patungan';
             }
 
             foreach ($shared as $g) {
@@ -449,12 +449,12 @@ class QurbanController extends Controller
                     $price += $g->avg('animal_price');
                 }
             }
-            
+
             return [
                 'animal_type' => ucfirst($type),
                 'count' => $count,
                 'total_price' => $price,
-                'details' => implode(', ', $details)
+                'details' => implode(', ', $details),
             ];
         })->values();
 
@@ -477,6 +477,7 @@ class QurbanController extends Controller
         } else {
             $pdf = Pdf::loadView('exports.qurban_pdf', $data);
             $pdf->setPaper('a4', 'portrait');
+
             return $pdf->stream("Laporan_Qurban_$year.pdf");
         }
     }
@@ -506,7 +507,7 @@ class QurbanController extends Controller
         $validated['registration_date'] = now()->toDateString();
         $validated['registered_by'] = null; // No auth user
         $validated['status'] = 'registered';
-        $validated['notes'] = ($validated['notes'] ?? '') . ' [DAFTAR VIA WEBSITE]';
+        $validated['notes'] = ($validated['notes'] ?? '').' [DAFTAR VIA WEBSITE]';
 
         Qurban::create($validated);
 

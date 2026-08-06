@@ -49,6 +49,7 @@ const menuSections = [
         items: [
             { label: 'Jadwal Sholat', href: '/ibadah/jadwal', icon: ClockIcon },
             { label: 'Agenda Kegiatan', href: '/ibadah/agenda', icon: CalendarIcon },
+            { label: 'Kajian Rutin', href: '/kajian', icon: CalendarIcon },
             { label: 'Jadwal Jumat', href: '/ibadah/jumat', icon: CalendarIcon }
         ]
     }

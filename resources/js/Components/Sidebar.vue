@@ -70,6 +70,7 @@ const menuGroups = computed(() => {
                 { name: 'Kelola Agenda', route: 'agendas.index', icon: CalendarIcon, visible: true },
                 { name: 'Kelola Slide TV', route: 'slides.index', icon: PresentationChartBarIcon, visible: true },
                 { name: 'Kelola TPA', route: 'admin.tpa.index', icon: AcademicCapIcon, visible: true },
+                { name: 'Kajian Rutin', route: 'admin.kajian.index', icon: CalendarDaysIcon, visible: true },
                 { name: 'Inventaris Aset', route: 'assets.index', icon: ArchiveBoxIcon, visible: true },
                 { name: 'TV Display', route: 'display.index', icon: TvIcon, visible: true, external: true }
             ]

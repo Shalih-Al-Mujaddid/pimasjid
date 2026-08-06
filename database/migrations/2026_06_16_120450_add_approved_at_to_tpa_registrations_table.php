@@ -8,9 +8,9 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('tpa_registrations', function (Blueprint $table) {
-            $table->timestamp('approved_at')->nullable()->after('status');
-        });
+        // Schema::table('tpa_registrations', function (Blueprint $table) {
+        //     $table->timestamp('approved_at')->nullable()->after('status');
+        // });
     }
 
     public function down(): void

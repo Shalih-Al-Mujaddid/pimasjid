@@ -21,23 +21,23 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Vite::prefetch(concurrency: 3);
-        
+
         // Register Transaction Observer
         \App\Models\Transaction::observe(\App\Observers\TransactionObserver::class);
-        
+
         // Define Authorization Gates
         \Illuminate\Support\Facades\Gate::define('manage_finance', function ($user) {
             return in_array($user->role, ['super_admin', 'bendahara']);
         });
-        
+
         \Illuminate\Support\Facades\Gate::define('manage_operations', function ($user) {
             return in_array($user->role, ['super_admin', 'marbot']);
         });
-        
+
         \Illuminate\Support\Facades\Gate::define('approve_transaction', function ($user) {
             return in_array($user->role, ['super_admin', 'ketua']);
         });
-        
+
         \Illuminate\Support\Facades\Gate::define('view_dashboard_executive', function ($user) {
             return in_array($user->role, ['super_admin', 'ketua']);
         });

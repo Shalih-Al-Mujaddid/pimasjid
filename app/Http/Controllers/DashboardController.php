@@ -8,7 +8,6 @@ use App\Models\Slide;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -54,7 +53,7 @@ class DashboardController extends Controller
         $balance = $totalIncome - $totalExpense;
 
         $baseStats = [
-            'formattedBalance' => 'Rp ' . number_format($balance, 0, ',', '.'),
+            'formattedBalance' => 'Rp '.number_format($balance, 0, ',', '.'),
             'balance' => $balance,
         ];
 
@@ -79,8 +78,8 @@ class DashboardController extends Controller
 
             case 'bendahara':
                 return array_merge($baseStats, [
-                    'formattedMonthlyIncome' => 'Rp ' . number_format($this->getMonthlySum('income'), 0, ',', '.'),
-                    'formattedMonthlyExpense' => 'Rp ' . number_format($this->getMonthlySum('expense'), 0, ',', '.'),
+                    'formattedMonthlyIncome' => 'Rp '.number_format($this->getMonthlySum('income'), 0, ',', '.'),
+                    'formattedMonthlyExpense' => 'Rp '.number_format($this->getMonthlySum('expense'), 0, ',', '.'),
                 ]);
 
             case 'sekretaris':
@@ -93,6 +92,7 @@ class DashboardController extends Controller
             case 'marbot':
                 $activeSlides = Slide::where('is_active', true)->count();
                 $brokenAssets = Asset::where('condition', '!=', 'Baik')->count();
+
                 return [
                     'activeSlides' => $activeSlides,
                     'brokenAssets' => $brokenAssets,
@@ -107,10 +107,12 @@ class DashboardController extends Controller
 
     private function getRecentTransactions($role)
     {
-        if ($role === 'marbot') return [];
+        if ($role === 'marbot') {
+            return [];
+        }
 
         $query = Transaction::with('user');
-        
+
         if ($role === 'ketua') {
             // For Chairperson, prioritize Pending items
             $query->orderByRaw("CASE status 
@@ -119,11 +121,11 @@ class DashboardController extends Controller
                 WHEN 'rejected' THEN 3 
                 ELSE 4 END");
         }
-        
+
         return $query->latest()
             ->take(10)
             ->get()
-            ->map(fn($t) => [
+            ->map(fn ($t) => [
                 'id' => $t->id,
                 'type' => $t->type,
                 'category' => $t->category,
@@ -231,7 +233,7 @@ class DashboardController extends Controller
 
             return [
                 'labels' => $transactions->pluck('category')->toArray(),
-                'amounts' => $transactions->pluck('total')->map(fn($t) => (float) $t)->toArray(),
+                'amounts' => $transactions->pluck('total')->map(fn ($t) => (float) $t)->toArray(),
             ];
         });
     }
@@ -252,7 +254,7 @@ class DashboardController extends Controller
 
         foreach ($recentTransactions as $tx) {
             $activities[] = [
-                'id' => 'tx_' . $tx->id,
+                'id' => 'tx_'.$tx->id,
                 'category' => $tx->type === 'income' ? 'Keuangan' : 'Keuangan',
                 'description' => $tx->description,
                 'user_name' => $tx->user->name ?? 'System',

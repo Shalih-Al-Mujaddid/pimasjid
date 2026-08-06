@@ -422,7 +422,7 @@ watch(currentPrayerTimes, (newTimes) => {
                         <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-8">Mencetak generasi rabbani melalui pendidikan Al-Quran yang intensif dan berjenjang.</p>
 <Link
     :href="route('public.tpa.register')"
-    class="text-persian-navy font-black text-[10px] uppercase tracking-widest flex items-center gap-1 group-hover:gap-2 transition-all"
+    class="text-bakri-teal font-black text-[10px] uppercase tracking-widest flex items-center gap-1 group-hover:gap-2 transition-all"
 >
     Daftar
     <ArrowRightIcon class="w-3 h-3" />
@@ -438,7 +438,7 @@ watch(currentPrayerTimes, (newTimes) => {
                         </div>
                         <h3 class="text-xl font-black text-slate-800 dark:text-white mb-4 uppercase tracking-tighter leading-none">Kajian Rutin</h3>
                         <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-8">Mendalami ilmu agama bersama guru-guru pilihan dalam suasana yang sejuk dan ukhuwah.</p>
-                        <a href="#" class="text-bakri-teal font-black text-[10px] uppercase tracking-widest flex items-center gap-1 group-hover:gap-2 transition-all">Jadwal <ArrowRightIcon class="w-3 h-3" /></a>
+                        <Link :href="route('public.kajian.index')" class="text-bakri-teal font-black text-[10px] uppercase tracking-widest flex items-center gap-1 group-hover:gap-2 transition-all">Jadwal <ArrowRightIcon class="w-3 h-3" /></Link>
                     </div>
                 </div>
             </div>
