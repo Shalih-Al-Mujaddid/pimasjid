@@ -40,7 +40,7 @@ class KajianController extends Controller
             'date' => $kajian->date,
             'time' => $kajian->time,
             'location' => $kajian->location,
-            'banner' => $kajian->banner,
+            'banner' => $kajian->banner_url,
             'status' => $kajian->status,
             'formatted_date' => \Carbon\Carbon::parse($kajian->date)->translatedFormat('l, d F Y'),
         ]);
@@ -59,14 +59,14 @@ class KajianController extends Controller
                 'title' => $kajian->title,
                 'theme' => $kajian->theme,
                 'ustaz_name' => $kajian->ustaz_name,
-                'ustaz_photo' => $kajian->ustaz_photo,
+                'ustaz_photo' => $kajian->ustaz_photo_url,
                 'ustaz_topic' => $kajian->ustaz_topic,
                 'ustaz_bio' => $kajian->ustaz_bio,
                 'date' => $kajian->date,
                 'time' => $kajian->time,
                 'location' => $kajian->location,
                 'description' => $kajian->description,
-                'banner' => $kajian->banner,
+                'banner' => $kajian->banner_url,
                 'video_url' => $kajian->video_url,
                 'status' => $kajian->status,
                 'formatted_date' => \Carbon\Carbon::parse($kajian->date)->translatedFormat('l, d F Y'),
@@ -87,8 +87,8 @@ class KajianController extends Controller
     }
 
     public function store(Request $request)
-{
-    Gate::authorize('manage_operations');
+    {
+        Gate::authorize('manage_operations');
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -167,8 +167,12 @@ class KajianController extends Controller
         Gate::authorize('manage_operations');
 
         // Hapus file lokal
-        if ($kajian->banner) Storage::disk('public')->delete($kajian->banner);
-        if ($kajian->ustaz_photo) Storage::disk('public')->delete($kajian->ustaz_photo);
+        if ($kajian->banner) {
+            Storage::disk('public')->delete($kajian->banner);
+        }
+        if ($kajian->ustaz_photo) {
+            Storage::disk('public')->delete($kajian->ustaz_photo);
+        }
 
         $kajian->delete();
 

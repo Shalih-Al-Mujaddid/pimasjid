@@ -56,8 +56,8 @@ const openModal = (kajian = null) => {
         form.status = kajian.status;
         form.banner_image = null;
         form.ustaz_image = null;
-        imagePreview.value = kajian.banner || null;
-        ustazPreview.value = kajian.ustaz_photo || null;
+        imagePreview.value = kajian.banner_url || null;
+        ustazPreview.value = kajian.ustaz_photo_url || null;
     } else {
         form.reset();
         form.status = 'akan_datang';
