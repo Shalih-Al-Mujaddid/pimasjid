@@ -10,7 +10,7 @@ RUN npm run build
 FROM php:8.2-fpm-alpine
 WORKDIR /var/www/html
 
-# Instal ekstensi PHP yang dibutuhkan Laravel
+# Instal ekstensi PHP yang dibutuhkan Laravel & Nginx
 RUN apk add --no-cache \
     nginx \
     supervisor \
@@ -23,11 +23,13 @@ RUN apk add --no-cache \
     oniguruma-dev
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
+# AMBIL COMPOSER RESMI LANGSUNG DARI IMAGE COMPOSER (Perbaikan di sini)
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+
 # Salin kode proyek dan hasil build frontend
 COPY --from=frontend-builder /app /var/www/html
-COPY --from=frontend-builder /usr/local/bin/composer /usr/local/bin/composer
 
-# Jalankan Composer
+# Jalankan Composer untuk menginstal library PHP Laravel
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 
