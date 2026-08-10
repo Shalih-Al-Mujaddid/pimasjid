@@ -31,7 +31,8 @@ COPY --from=frontend-builder /app /var/www/html
 
 # Jalankan Composer untuk menginstal library PHP Laravel
 ENV COMPOSER_ALLOW_SUPERUSER=1
-RUN composer install --no-interaction --optimize-autoloader --no-dev
+RUN composer install --no-interaction --optimize-autoloader --no-dev --ignore-platform-reqs
+
 
 # Atur izin folder Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
