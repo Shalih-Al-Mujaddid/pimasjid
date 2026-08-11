@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Artisan; // <-- 1. TAMBAHKAN INI DI SINI
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -53,5 +54,14 @@ class AppServiceProvider extends ServiceProvider
         \Illuminate\Support\Facades\Gate::define('manage_posts', function ($user) {
             return in_array($user->role, ['super_admin', 'ketua']);
         });
+
+        // <-- 2. TAMBAHKAN BLOK MIGRASI OTOMATIS INI DI PALING BAWAH SEBELUM TUTUP KURUNG
+        if (config('app.env') === 'production') {
+            try {
+                Artisan::call('migrate', ['--force' => true]);
+            } catch (\Exception $e) {
+                // Abaikan jika tabel sudah terbuat
+            }
+        }
     }
 }
