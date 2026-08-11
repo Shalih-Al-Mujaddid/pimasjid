@@ -194,3 +194,13 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/paksa-migrasi', function () {
+    try {
+        Artisan::call('migrate', ['--force' => true]);
+        return 'Database berhasil dimigrasi!';
+    } catch (\Exception $e) {
+        return 'Gagal: ' . $e->getMessage();
+    }
+});
+
