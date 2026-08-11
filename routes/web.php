@@ -204,3 +204,20 @@ Route::get('/paksa-migrasi', function () {
     }
 });
 
+
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/gas-migrate-masjid', function () {
+    try {
+        // Membersihkan cache konfigurasi lama agar setingan database pgsql terbaca segar
+        Artisan::call('config:clear');
+        Artisan::call('cache:clear');
+        
+        // Eksekusi paksa migrasi database
+        Artisan::call('migrate', ['--force' => true]);
+        
+        return 'SUKSES: Seluruh tabel database PIMASJID berhasil dibuat di Render!';
+    } catch (\Exception $e) {
+        return 'Gagal melakukan migrasi. Error: ' . $e->getMessage();
+    }
+});
