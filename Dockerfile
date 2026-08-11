@@ -56,6 +56,7 @@ RUN echo 'server { \
 
 EXPOSE 80
 
-# Jalankan PHP-FPM dan Nginx secara bersamaan
+# Pastikan baris paling bawah Dockerfile kamu polos seperti ini:
 CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]
+
 
