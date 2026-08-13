@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Setting;
-use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class SettingController extends Controller
@@ -29,23 +28,12 @@ class SettingController extends Controller
         foreach ($request->settings as $item) {
             $setting = Setting::where('key', $item['key'])->first();
 
-            // Handle Image Upload to Cloudinary
+            // Handle Image Upload to Local Storage
             if ($setting->type === 'image' && isset($item['file']) && $item['file'] instanceof \Illuminate\Http\UploadedFile) {
-                if (env('CLOUDINARY_URL')) {
-                    // Delete old image from Cloudinary if exists
-                    if ($setting->cloudinary_public_id) {
-                        CloudinaryService::delete($setting->cloudinary_public_id);
-                    }
-                    // Upload to Cloudinary
-                    $result = CloudinaryService::upload($item['file'], 'settings');
-                    $setting->value = $result['url'];
-                    $setting->cloudinary_public_id = $result['public_id'];
-                } else {
-                    if ($setting->value && ! str_starts_with($setting->value, 'http')) {
-                        \Illuminate\Support\Facades\Storage::disk('public')->delete($setting->value);
-                    }
-                    $setting->value = $item['file']->store('settings', 'public');
+                if ($setting->value && ! str_starts_with($setting->value, 'http')) {
+                    Storage::disk('public')->delete($setting->value);
                 }
+                $setting->value = $item['file']->store('settings', 'public');
             } elseif ($setting->type !== 'image') {
                 $setting->value = $item['value'];
             }

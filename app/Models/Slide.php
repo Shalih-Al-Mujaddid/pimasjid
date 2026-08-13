@@ -41,9 +41,7 @@ class Slide extends Model
     protected function imageUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->image_path
-                ? (str_starts_with($this->image_path, 'http') ? $this->image_path : asset('storage/'.$this->image_path))
-                : null,
+            get: fn () => storage_url($this->image_path),
         );
     }
 

@@ -32,10 +32,17 @@ class HandleInertiaRequests extends Middleware
     {
         $user = $request->user();
 
-        // Optimized settings fetch: key => value pairs
+        // Optimized settings fetch: key => value pairs with image URL formatting
         // Cache for 60 minutes to improve performance
         $settings = \Illuminate\Support\Facades\Cache::remember('global_settings', 60 * 60, function () {
-            return Setting::all()->pluck('value', 'key');
+            return Setting::all()->mapWithKeys(function ($setting) {
+                $value = $setting->value;
+                if (($setting->type === 'image' || str_contains($setting->key, 'logo') || str_contains($setting->key, 'image') || str_contains($setting->key, 'qris')) && $value) {
+                    $value = storage_url($value);
+                }
+
+                return [$setting->key => $value];
+            })->toArray();
         });
 
         return [

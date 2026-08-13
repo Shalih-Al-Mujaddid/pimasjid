@@ -17,18 +17,14 @@ class Kajian extends Model
     protected function bannerUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->banner
-                ? (str_starts_with($this->banner, 'http') ? $this->banner : asset('storage/'.$this->banner))
-                : null,
+            get: fn () => asset('storage/' . $this->banner),
         );
     }
 
     protected function ustazPhotoUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->ustaz_photo
-                ? (str_starts_with($this->ustaz_photo, 'http') ? $this->ustaz_photo : asset('storage/'.$this->ustaz_photo))
-                : null,
+            get: fn () => asset('storage/' . $this->ustaz_photo),
         );
     }
 }

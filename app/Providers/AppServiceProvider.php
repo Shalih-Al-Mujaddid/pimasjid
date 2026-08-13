@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Vite;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Artisan; // <-- 1. TAMBAHKAN INI DI SINI
+use Illuminate\Support\ServiceProvider; // <-- 1. TAMBAHKAN INI DI SINI
 
 class AppServiceProvider extends ServiceProvider
 {

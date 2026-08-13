@@ -258,7 +258,7 @@ watch(currentPrayerTimes, (newTimes) => {
 
                         <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-2 uppercase tracking-tight">Layanan Umat</h3>
                         <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed line-clamp-2">
-                            Program santunan, bantuan kesehatan, dan layanan sosial kemasyarakatan yang terintegrasi.
+                            
                         </p>
 
                         <div class="mt-auto pt-6 border-t border-slate-50 dark:border-slate-700 flex justify-between items-center">
@@ -267,7 +267,7 @@ watch(currentPrayerTimes, (newTimes) => {
                                 <div class="w-7 h-7 rounded-full bg-persian-gold/10 border-2 border-white dark:border-slate-800 flex items-center justify-center text-[10px]">🐑</div>
                                 <div class="w-7 h-7 rounded-full bg-persian-navy/10 border-2 border-white dark:border-slate-800 flex items-center justify-center text-[10px]">🍱</div>
                             </div>
-                            <a href="#" class="text-persian-navy text-sm font-black hover:gap-1 transition-all flex items-center gap-0.5">
+                            <a href="layanan-umat" class="text-persian-navy text-sm font-black hover:gap-1 transition-all flex items-center gap-0.5">
                                 Selengkapnya <ArrowRightIcon class="w-3.5 h-3.5" />
                             </a>
                         </div>

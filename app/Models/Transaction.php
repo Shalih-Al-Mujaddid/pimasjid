@@ -115,9 +115,7 @@ class Transaction extends Model
     protected function proofUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->proof_image_path
-                ? (str_starts_with($this->proof_image_path, 'http') ? $this->proof_image_path : asset('storage/'.$this->proof_image_path))
-                : null,
+            get: fn () => storage_url($this->proof_image_path),
         );
     }
 

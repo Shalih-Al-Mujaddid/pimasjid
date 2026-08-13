@@ -57,6 +57,20 @@ Route::post('/tpa/daftar', [App\Http\Controllers\TpaRegistrationController::clas
 Route::get('/keuangan', [App\Http\Controllers\TransactionController::class, 'publicIndex'])
     ->name('keuangan.index');
 
+// Public Layanan Umat Portal & Applications
+Route::get('/layanan-umat', [App\Http\Controllers\LayananUmatController::class, 'publicIndex'])
+    ->name('public.layanan_umat.index');
+Route::get('/layanan-umat/tracking', [App\Http\Controllers\LayananUmatController::class, 'trackApplication'])
+    ->name('public.layanan_umat.track');
+Route::get('/layanan-umat/{service:slug}', [App\Http\Controllers\LayananUmatController::class, 'publicShow'])
+    ->name('public.layanan_umat.show');
+Route::post('/layanan-umat/{service:slug}/ajukan', [App\Http\Controllers\LayananUmatController::class, 'storeApplication'])
+    ->name('public.layanan_umat.submit');
+
+// Public AI Assistant Chat Endpoint
+Route::post('/api/ai-assistant/chat', [App\Http\Controllers\AiAssistantController::class, 'chat'])
+    ->name('public.ai.chat');
+
 Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
@@ -191,33 +205,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/reports', [App\Http\Controllers\QurbanController::class, 'reports'])->name('qurban.reports');
         Route::get('/export', [App\Http\Controllers\QurbanController::class, 'export'])->name('qurban.export'); // New export route
     });
+
+    // Admin Layanan Umat Management
+    Route::prefix('admin/layanan-umat')->group(function () {
+        Route::get('/', [App\Http\Controllers\LayananUmatController::class, 'adminIndex'])->name('admin.layanan_umat.index');
+        Route::post('/services', [App\Http\Controllers\LayananUmatController::class, 'storeService'])->name('admin.layanan_umat.service.store');
+        Route::put('/services/{service}', [App\Http\Controllers\LayananUmatController::class, 'updateService'])->name('admin.layanan_umat.service.update');
+        Route::delete('/services/{service}', [App\Http\Controllers\LayananUmatController::class, 'deleteService'])->name('admin.layanan_umat.service.destroy');
+        Route::patch('/applications/{application}/status', [App\Http\Controllers\LayananUmatController::class, 'updateApplicationStatus'])->name('admin.layanan_umat.application.status');
+    });
 });
 
 require __DIR__.'/auth.php';
-
-Route::get('/paksa-migrasi', function () {
-    try {
-        Artisan::call('migrate', ['--force' => true]);
-        return 'Database berhasil dimigrasi!';
-    } catch (\Exception $e) {
-        return 'Gagal: ' . $e->getMessage();
-    }
-});
-
-
-use Illuminate\Support\Facades\Artisan;
-
-Route::get('/gas-migrate-masjid', function () {
-    try {
-        // Membersihkan cache konfigurasi lama agar setingan database pgsql terbaca segar
-        Artisan::call('config:clear');
-        Artisan::call('cache:clear');
-        
-        // Eksekusi paksa migrasi database
-        Artisan::call('migrate', ['--force' => true]);
-        
-        return 'SUKSES: Seluruh tabel database PIMASJID berhasil dibuat di Render!';
-    } catch (\Exception $e) {
-        return 'Gagal melakukan migrasi. Error: ' . $e->getMessage();
-    }
-});

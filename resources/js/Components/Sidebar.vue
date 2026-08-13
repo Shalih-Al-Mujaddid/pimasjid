@@ -17,7 +17,13 @@ import {
     PaintBrushIcon,
     GiftIcon,
     CakeIcon,
-    AcademicCapIcon
+    AcademicCapIcon,
+    HeartIcon,
+    TruckIcon,
+    UserGroupIcon,
+    SparklesIcon,
+    BookOpenIcon,
+    BuildingLibraryIcon
 } from '@heroicons/vue/24/outline';
 
 const page = usePage();
@@ -48,18 +54,20 @@ const menuGroups = computed(() => {
         });
     }
     
-    // Keuangan
-    if (['bendahara', 'super_admin'].includes(role)) {
+    // Keuangan & Sosial
+    if (['bendahara', 'marbot', 'ketua', 'super_admin'].includes(role)) {
         groups.push({
             title: 'Keuangan & Sosial',
             items: [
                 { name: 'Keuangan', route: 'keuangan.index', icon: BanknotesIcon, visible: true },
                 { name: 'Input Transaksi', route: 'transactions.index', icon: PencilSquareIcon, visible: true },
+                { name: 'Layanan Umat', route: 'admin.layanan_umat.index', icon: HeartIcon, visible: true },
                 { name: 'Zakat', route: 'zakat.index', icon: GiftIcon, visible: true },
                 { name: 'Qurban', route: 'qurban.index', icon: CakeIcon, visible: true }
             ]
         });
     }
+
 
     // Operasional
     if (['marbot', 'super_admin'].includes(role)) {

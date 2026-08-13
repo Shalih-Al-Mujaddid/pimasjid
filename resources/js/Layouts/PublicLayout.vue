@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import Navbar from '@/Components/Public/Navbar.vue';
 import MobileBottomNav from '@/Components/Landing/MobileBottomNav.vue';
 import MobileMenuDrawer from '@/Components/Landing/MobileMenuDrawer.vue';
+import AiAssistantModal from '@/Components/AiAssistantModal.vue';
 
 const props = defineProps({
     transparentNav: {
@@ -60,5 +61,8 @@ defineExpose({
             :open="showMobileMenu"
             @close="closeMobileMenu"
         />
+
+        <!-- AI Assistant Floating Modal -->
+        <AiAssistantModal />
     </div>
 </template>

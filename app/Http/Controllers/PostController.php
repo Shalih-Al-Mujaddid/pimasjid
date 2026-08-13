@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
-use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class PostController extends Controller
@@ -38,16 +37,9 @@ class PostController extends Controller
         ]);
 
         $imagePath = null;
-        $cloudinaryPublicId = null;
 
         if ($request->hasFile('photo')) {
-            if (env('CLOUDINARY_URL')) {
-                $result = CloudinaryService::upload($request->file('photo'), 'posts');
-                $imagePath = $result['url'];
-                $cloudinaryPublicId = $result['public_id'];
-            } else {
-                $imagePath = $request->file('photo')->store('posts', 'public');
-            }
+            $imagePath = $request->file('photo')->store('posts', 'public');
         }
 
         $excerpt = $validated['excerpt'];
@@ -61,7 +53,6 @@ class PostController extends Controller
             'excerpt' => $excerpt,
             'content' => $validated['content'],
             'image_path' => $imagePath,
-            'cloudinary_public_id' => $cloudinaryPublicId,
             'is_published' => $validated['is_published'] ?? false,
             'published_at' => $validated['published_at'] ?? (($validated['is_published'] ?? false) ? now() : null),
             'author_id' => auth()->id(),
@@ -85,20 +76,10 @@ class PostController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            if (env('CLOUDINARY_URL')) {
-                // Delete old from Cloudinary
-                if ($post->cloudinary_public_id) {
-                    CloudinaryService::delete($post->cloudinary_public_id);
-                }
-                $result = CloudinaryService::upload($request->file('photo'), 'posts');
-                $post->image_path = $result['url'];
-                $post->cloudinary_public_id = $result['public_id'];
-            } else {
-                if ($post->image_path && ! str_starts_with($post->image_path, 'http')) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete($post->image_path);
-                }
-                $post->image_path = $request->file('photo')->store('posts', 'public');
+            if ($post->image_path && ! str_starts_with($post->image_path, 'http')) {
+                Storage::disk('public')->delete($post->image_path);
             }
+            $post->image_path = $request->file('photo')->store('posts', 'public');
         }
 
         $post->title = $validated['title'];
@@ -128,13 +109,8 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        if (env('CLOUDINARY_URL')) {
-            if ($post->cloudinary_public_id) {
-                CloudinaryService::delete($post->cloudinary_public_id);
-            }
-        } else {
-            // Delete local file
-            if ($post->image_path) \Illuminate\Support\Facades\Storage::disk('public')->delete($post->image_path);
+        if ($post->image_path && ! str_starts_with($post->image_path, 'http')) {
+            Storage::disk('public')->delete($post->image_path);
         }
 
         $post->delete();

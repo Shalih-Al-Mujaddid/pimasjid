@@ -5,6 +5,7 @@ import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import Sidebar from '@/Components/Sidebar.vue';
+import AiAssistantModal from '@/Components/AiAssistantModal.vue';
 import { Link } from '@inertiajs/vue3';
 import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline';
 
@@ -132,6 +133,9 @@ const stopImpersonation = () => {
                     <slot />
                 </div>
             </main>
+
+            <!-- AI Assistant Floating Modal -->
+            <AiAssistantModal />
         </div>
     </div>
 </template>

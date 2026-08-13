@@ -38,13 +38,7 @@ class Post extends Model
     // Accessors
     public function getImageUrlAttribute()
     {
-        if (! $this->image_path) {
-            return 'https://placehold.co/600x400/e2e8f0/1e293b?text=No+Image';
-        }
-
-        return str_starts_with($this->image_path, 'http')
-            ? $this->image_path
-            : asset('storage/'.$this->image_path);
+        return storage_url($this->image_path, 'https://placehold.co/600x400/e2e8f0/1e293b?text=No+Image');
     }
 
     public function getAuthorNameAttribute()

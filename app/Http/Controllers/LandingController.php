@@ -36,8 +36,6 @@ class LandingController extends Controller
 
         // Committee Members (Grouped)
         $committee = \App\Models\CommitteeMember::where('is_active', true)
-            ->whereNotNull('photo_path')
-            ->where('photo_path', '!=', '')
             ->orderBy('division')
             ->orderBy('order')
             ->get()

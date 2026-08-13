@@ -59,8 +59,6 @@ class PublicController extends Controller
     public function structure(): Response
     {
         $committee = CommitteeMember::where('is_active', true)
-            ->whereNotNull('photo_path')
-            ->where('photo_path', '!=', '')
             ->orderBy('division')
             ->orderBy('order')
             ->get()
@@ -181,7 +179,7 @@ class PublicController extends Controller
             'vision' => setting('about_vision'),
             'mission' => setting('about_mission'),
             'history' => setting('about_history'),
-            'image' => setting('about_image'),
+            'image' => storage_url(setting('about_image')),
         ];
 
         return Inertia::render('Public/Tentang', [

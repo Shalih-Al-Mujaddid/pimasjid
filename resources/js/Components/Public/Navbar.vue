@@ -58,11 +58,13 @@ const navigationItems = [
             { name: 'Petugas Jumat', href: '/ibadah/jumat' },
             { name: '🧭 Arah Kiblat', href: '/ibadah/kiblat' },
             { name: '📖 Al-Quran Digital', href: '/quran' },
+            { name: '🤝 Layanan Umat', href: '/layanan-umat' },
             { name: '🕌 Info Zakat', href: '/info/zakat' },
             { name: '🐑 Daftar Qurban', href: '/info/qurban' },
         ],
     },
 ];
+
 
 // Expose open modal function for parent components if needed (optional)
 defineExpose({ openDonationModal: () => showDonationModal.value = true });

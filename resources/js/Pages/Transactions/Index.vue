@@ -179,49 +179,54 @@ const formatCurrency = (val) => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
                 
                 <!-- Filters & Export -->
-                <div class="bg-white rounded-[2rem] p-8 shadow-xl shadow-slate-200/50 border border-slate-100">
-                    <div class="flex flex-col xl:flex-row gap-8 justify-between items-start xl:items-end">
-                        <!-- Filters -->
-                        <div class="flex-1 w-full grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
-                            <div class="space-y-1.5">
-                                <label class="text-xs font-black text-slate-400 uppercase tracking-widest pl-1">Dari Tanggal</label>
+                <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs">
+                    <div class="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center">
+                        <!-- Filters Group -->
+                        <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+                            <!-- Dari Tanggal -->
+                            <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 focus-within:ring-2 focus-within:ring-emerald-500/20 focus-within:border-emerald-500 transition-all">
+                                <label class="text-xs font-bold text-slate-500 shrink-0">Dari:</label>
                                 <input 
                                     v-model="filterForm.start_date" 
                                     type="date" 
-                                    class="w-full rounded-2xl border-slate-200 focus:ring-emerald-500 focus:border-emerald-500 font-bold bg-slate-50 transition-all text-sm"
+                                    class="bg-transparent border-0 p-0 text-xs font-bold text-slate-700 focus:ring-0 cursor-pointer"
                                     @change="applyFilters"
                                 />
                             </div>
-                            <div class="space-y-1.5">
-                                <label class="text-xs font-black text-slate-400 uppercase tracking-widest pl-1">Sampai Tanggal</label>
+
+                            <!-- Sampai Tanggal -->
+                            <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 focus-within:ring-2 focus-within:ring-emerald-500/20 focus-within:border-emerald-500 transition-all">
+                                <label class="text-xs font-bold text-slate-500 shrink-0">Sampai:</label>
                                 <input 
                                     v-model="filterForm.end_date" 
                                     type="date" 
-                                    class="w-full rounded-2xl border-slate-200 focus:ring-emerald-500 focus:border-emerald-500 font-bold bg-slate-50 transition-all text-sm"
+                                    class="bg-transparent border-0 p-0 text-xs font-bold text-slate-700 focus:ring-0 cursor-pointer"
                                     @change="applyFilters"
                                 />
                             </div>
-                            <div class="flex flex-wrap gap-2">
-                                <button type="button" @click="setToday" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-black transition-all">HARI INI</button>
-                                <button type="button" @click="setThisMonth" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-black transition-all">BULAN INI</button>
-                                <button type="button" @click="resetFilters" class="px-4 py-2.5 text-rose-500 hover:bg-rose-50 rounded-xl text-xs font-black transition-all border border-transparent hover:border-rose-100 uppercase tracking-widest">Reset</button>
+
+                            <!-- Quick Preset & Reset Group -->
+                            <div class="inline-flex items-center p-1 bg-slate-100/90 rounded-xl gap-1 border border-slate-200/60">
+                                <button type="button" @click="setToday" class="px-3 py-1 bg-white hover:bg-emerald-600 hover:text-white text-slate-700 rounded-lg text-xs font-bold transition-all shadow-2xs">Hari Ini</button>
+                                <button type="button" @click="setThisMonth" class="px-3 py-1 bg-white hover:bg-emerald-600 hover:text-white text-slate-700 rounded-lg text-xs font-bold transition-all shadow-2xs">Bulan Ini</button>
+                                <button type="button" @click="resetFilters" class="px-2.5 py-1 text-rose-600 hover:bg-rose-50 rounded-lg text-xs font-bold transition-all">Reset</button>
                             </div>
                         </div>
 
-                        <!-- Exports -->
-                         <div class="flex gap-3 w-full md:w-auto">
+                        <!-- Exports Group -->
+                        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
                             <button 
                                 @click="exportData('pdf')"
-                                class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 bg-white border-2 border-slate-100 text-rose-600 rounded-xl hover:border-rose-100 hover:bg-rose-50 transition-all text-sm font-black uppercase tracking-widest"
+                                class="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 bg-white border border-slate-200 hover:border-rose-200 hover:bg-rose-50 text-rose-600 rounded-xl text-xs font-bold transition-all shadow-2xs"
                             >
-                                <DocumentTextIcon class="w-5 h-5" />
+                                <DocumentTextIcon class="w-4 h-4" />
                                 <span>PDF</span>
                             </button>
                             <button 
                                 @click="exportData('excel')"
-                                class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 bg-white border-2 border-slate-100 text-emerald-600 rounded-xl hover:border-emerald-100 hover:bg-emerald-50 transition-all text-sm font-black uppercase tracking-widest"
+                                class="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 bg-white border border-slate-200 hover:border-emerald-200 hover:bg-emerald-50 text-emerald-600 rounded-xl text-xs font-bold transition-all shadow-2xs"
                             >
-                                <TableCellsIcon class="w-5 h-5" />
+                                <TableCellsIcon class="w-4 h-4" />
                                 <span>Excel</span>
                             </button>
                         </div>

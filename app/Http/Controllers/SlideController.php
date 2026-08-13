@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Slide;
-use App\Services\CloudinaryService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class SlideController extends Controller
@@ -39,21 +38,11 @@ class SlideController extends Controller
             'order' => 'nullable|integer',
         ]);
 
-        $imagePath = null;
-        $cloudinaryPublicId = null;
-
-        if (env('CLOUDINARY_URL')) {
-            $result = CloudinaryService::upload($request->file('image'), 'slides');
-            $imagePath = $result['url'];
-            $cloudinaryPublicId = $result['public_id'];
-        } else {
-            $imagePath = $request->file('image')->store('slides', 'public');
-        }
+        $imagePath = $request->file('image')->store('slides', 'public');
 
         Slide::create([
             'title' => $validated['title'],
             'image_path' => $imagePath,
-            'cloudinary_public_id' => $cloudinaryPublicId,
             'order' => $validated['order'] ?? Slide::max('order') + 1,
             'is_active' => true,
         ]);
@@ -86,21 +75,10 @@ class SlideController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            if (env('CLOUDINARY_URL')) {
-                // Delete old image from Cloudinary
-                if ($slide->cloudinary_public_id) {
-                    CloudinaryService::delete($slide->cloudinary_public_id);
-                }
-                // Upload new image
-                $result = CloudinaryService::upload($request->file('image'), 'slides');
-                $data['image_path'] = $result['url'];
-                $data['cloudinary_public_id'] = $result['public_id'];
-            } else {
-                if ($slide->image_path && ! str_starts_with($slide->image_path, 'http')) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete($slide->image_path);
-                }
-                $data['image_path'] = $request->file('image')->store('slides', 'public');
+            if ($slide->image_path && ! str_starts_with($slide->image_path, 'http')) {
+                Storage::disk('public')->delete($slide->image_path);
             }
+            $data['image_path'] = $request->file('image')->store('slides', 'public');
         }
 
         $slide->update($data);
@@ -112,13 +90,8 @@ class SlideController extends Controller
     {
         Gate::authorize('manage_operations');
 
-        if (env('CLOUDINARY_URL')) {
-            if ($slide->cloudinary_public_id) {
-                CloudinaryService::delete($slide->cloudinary_public_id);
-            }
-        } else {
-            // Delete local file
-            if ($slide->image_path) \Illuminate\Support\Facades\Storage::disk('public')->delete($slide->image_path);
+        if ($slide->image_path && ! str_starts_with($slide->image_path, 'http')) {
+            Storage::disk('public')->delete($slide->image_path);
         }
 
         $slide->delete();
