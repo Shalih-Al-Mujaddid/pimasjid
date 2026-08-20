@@ -10,7 +10,8 @@ import {
     CalendarIcon,
     MapPinIcon,
     ArrowPathIcon,
-    UsersIcon
+    UsersIcon,
+    MegaphoneIcon
 } from '@heroicons/vue/24/outline';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 
@@ -23,6 +24,7 @@ const props = defineProps({
     slides: Array,
     committee: Object,
     jumatSchedule: Object,
+    latestAnnouncement: Object,
     posts: Array,
 });
 
@@ -245,31 +247,40 @@ watch(currentPrayerTimes, (newTimes) => {
                     </div>
                 </div>
 
-                <!-- Services Card -->
+                <!-- Pengumuman Masjid Card -->
                 <div class="card bg-white dark:bg-slate-800 shadow-2xl border-none overflow-hidden group hover:-translate-y-2 transition-all duration-300">
                     <div class="h-1.5 w-full bg-persian-navy"></div>
                     <div class="card-body p-6 lg:p-8">
                         <div class="flex items-center justify-between mb-6">
                             <div class="p-3 bg-persian-navy/5 dark:bg-persian-navy/20 rounded-2xl text-persian-navy group-hover:scale-110 transition-transform">
-                                <HeartIcon class="w-7 h-7" />
+                                <MegaphoneIcon class="w-7 h-7" />
                             </div>
-                            <span class="badge badge-soft bg-persian-navy/5 text-persian-navy border-none uppercase text-[10px] font-bold tracking-wider">Amanah Umat</span>
+                            <span class="badge badge-soft bg-persian-navy/5 text-persian-navy border-none uppercase text-[10px] font-bold tracking-wider">Info Terkini</span>
                         </div>
 
-                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-2 uppercase tracking-tight">Layanan Umat</h3>
-                        <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed line-clamp-2">
-                            
+                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-2 uppercase tracking-tight">Pengumuman</h3>
+
+                        <!-- Latest Announcement (Dynamic) -->
+                        <div v-if="latestAnnouncement">
+                            <p class="text-slate-700 dark:text-slate-200 text-sm font-semibold leading-snug line-clamp-2 mb-1">
+                                {{ latestAnnouncement.title }}
+                            </p>
+                            <p class="text-slate-400 dark:text-slate-500 text-xs leading-relaxed line-clamp-2">
+                                {{ latestAnnouncement.excerpt }}
+                            </p>
+                        </div>
+                        <p v-else class="text-slate-400 dark:text-slate-500 text-sm leading-relaxed">
+                            Belum ada pengumuman terbaru.
                         </p>
 
                         <div class="mt-auto pt-6 border-t border-slate-50 dark:border-slate-700 flex justify-between items-center">
-                            <div class="flex -space-x-2">
-                                <div class="w-7 h-7 rounded-full bg-persian-blue/10 border-2 border-white dark:border-slate-800 flex items-center justify-center text-[10px]">🕌</div>
-                                <div class="w-7 h-7 rounded-full bg-persian-gold/10 border-2 border-white dark:border-slate-800 flex items-center justify-center text-[10px]">🐑</div>
-                                <div class="w-7 h-7 rounded-full bg-persian-navy/10 border-2 border-white dark:border-slate-800 flex items-center justify-center text-[10px]">🍱</div>
-                            </div>
-                            <a href="layanan-umat" class="text-persian-navy text-sm font-black hover:gap-1 transition-all flex items-center gap-0.5">
-                                Selengkapnya <ArrowRightIcon class="w-3.5 h-3.5" />
-                            </a>
+                            <span v-if="latestAnnouncement" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                                {{ latestAnnouncement.published_at }}
+                            </span>
+                            <span v-else class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">—</span>
+                            <Link :href="route('public.berita')" class="text-persian-navy text-sm font-black hover:gap-1 transition-all flex items-center gap-0.5">
+                                Semua Berita <ArrowRightIcon class="w-3.5 h-3.5" />
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -387,16 +398,16 @@ watch(currentPrayerTimes, (newTimes) => {
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <!-- Modern Service Card 1 -->
+                    <!-- Service Card 1 — Layanan Umat -->
                     <div class="card bg-slate-50 dark:bg-slate-800/50 border-none hover:bg-white dark:hover:bg-slate-800 shadow-none hover:shadow-2xl transition-all duration-500 p-8 rounded-[2.5rem] group">
                         <div class="w-16 h-16 bg-bakri-teal text-white rounded-[1.25rem] flex items-center justify-center mb-8 shadow-xl shadow-bakri-teal/20 group-hover:scale-110 group-hover:-rotate-6 transition-all">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                             </svg>
                         </div>
-                        <h3 class="text-xl font-black text-slate-800 dark:text-white mb-4 uppercase tracking-tighter leading-none">Ambulans Gratis</h3>
-                        <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-8">Armada siap sedia melayani jamaah dan warga 24 jam penuh tanpa dipungut biaya apapun.</p>
-                        <a href="#" class="text-bakri-teal font-black text-[10px] uppercase tracking-widest flex items-center gap-1 group-hover:gap-2 transition-all">Hubungi <ArrowRightIcon class="w-3 h-3" /></a>
+                        <h3 class="text-xl font-black text-slate-800 dark:text-white mb-4 uppercase tracking-tighter leading-none">Layanan Umat</h3>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-8">Akses berbagai layanan sosial & kemanusiaan masjid — dari bantuan sosial, jenazah, hingga program pemberdayaan umat.</p>
+                        <Link :href="route('public.layanan_umat.index')" class="text-bakri-teal font-black text-[10px] uppercase tracking-widest flex items-center gap-1 group-hover:gap-2 transition-all">Lihat Layanan <ArrowRightIcon class="w-3 h-3" /></Link>
                     </div>
 
                     <!-- Modern Service Card 2 -->
@@ -531,10 +542,14 @@ watch(currentPrayerTimes, (newTimes) => {
                                 <span class="text-emerald-500">📍</span>
                                 <span>{{ $page.props.settings?.address || 'Jl. Contoh No. 123, Jakarta Selatan' }}</span>
                             </p>
-                            <p class="flex items-center gap-3">
+                            <a 
+                                :href="$page.props.settings?.whatsapp ? `https://wa.me/${$page.props.settings.whatsapp}` : 'https://wa.me/6282346719219'" 
+                                target="_blank"
+                                class="flex items-center gap-3 hover:text-emerald-400 transition-colors"
+                            >
                                 <span class="text-emerald-500">📞</span>
-                                <span>{{ $page.props.settings?.phone || '(021) 7890-1234' }}</span>
-                            </p>
+                                <span>{{ $page.props.settings?.phone || '+62 823 4671 9219' }}</span>
+                            </a>
                             <p class="flex items-center gap-3">
                                 <span class="text-emerald-500">📧</span>
                                 <span>{{ $page.props.settings?.email || 'info@masjidvision.com' }}</span>

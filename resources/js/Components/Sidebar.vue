@@ -62,6 +62,7 @@ const menuGroups = computed(() => {
                 { name: 'Keuangan', route: 'keuangan.index', icon: BanknotesIcon, visible: true },
                 { name: 'Input Transaksi', route: 'transactions.index', icon: PencilSquareIcon, visible: true },
                 { name: 'Layanan Umat', route: 'admin.layanan_umat.index', icon: HeartIcon, visible: true },
+                { name: 'Kebutuhan Masjid', route: 'admin.wishlist.index', icon: GiftIcon, visible: true },
                 { name: 'Zakat', route: 'zakat.index', icon: GiftIcon, visible: true },
                 { name: 'Qurban', route: 'qurban.index', icon: CakeIcon, visible: true }
             ]
@@ -79,6 +80,7 @@ const menuGroups = computed(() => {
                 { name: 'Kelola Slide TV', route: 'slides.index', icon: PresentationChartBarIcon, visible: true },
                 { name: 'Kelola TPA', route: 'admin.tpa.index', icon: AcademicCapIcon, visible: true },
                 { name: 'Kajian Rutin', route: 'admin.kajian.index', icon: CalendarDaysIcon, visible: true },
+                { name: 'Kebutuhan & Wishlist', route: 'admin.wishlist.index', icon: GiftIcon, visible: true },
                 { name: 'Inventaris Aset', route: 'assets.index', icon: ArchiveBoxIcon, visible: true },
                 { name: 'TV Display', route: 'display.index', icon: TvIcon, visible: true, external: true }
             ]

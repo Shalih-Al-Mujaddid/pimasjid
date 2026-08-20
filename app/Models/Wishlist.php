@@ -4,10 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Wishlist extends Model
 {
+    use HasFactory;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -20,6 +24,22 @@ class Wishlist extends Model
         'unit_price',
         'status',
         'description',
+    ];
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array<int, string>
+     */
+    protected $appends = [
+        'total_target',
+        'total_fulfilled',
+        'remaining_qty',
+        'progress_percentage',
+        'formatted_unit_price',
+        'formatted_total_target',
+        'formatted_total_fulfilled',
+        'status_label',
     ];
 
     /**
@@ -37,12 +57,45 @@ class Wishlist extends Model
     }
 
     /**
+     * Get all contributions for this wishlist.
+     */
+    public function contributions(): HasMany
+    {
+        return $this->hasMany(WishlistContribution::class);
+    }
+
+    /**
+     * Get verified contributions for this wishlist.
+     */
+    public function verifiedContributions(): HasMany
+    {
+        return $this->hasMany(WishlistContribution::class)->where('status', 'verified');
+    }
+
+    /**
+     * Recalculate fulfilled_qty based on verified contributions.
+     */
+    public function recalculateProgress(): void
+    {
+        $verifiedQty = (int) $this->verifiedContributions()->sum('quantity');
+        $this->fulfilled_qty = max(0, $verifiedQty);
+
+        if ($this->fulfilled_qty >= $this->target_qty && $this->status === 'active') {
+            $this->status = 'completed';
+        } elseif ($this->fulfilled_qty < $this->target_qty && $this->status === 'completed') {
+            $this->status = 'active';
+        }
+
+        $this->save();
+    }
+
+    /**
      * Get total target amount accessor.
      */
     protected function totalTarget(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->target_qty * $this->unit_price,
+            get: fn () => (float) ($this->target_qty * $this->unit_price),
         );
     }
 
@@ -52,7 +105,7 @@ class Wishlist extends Model
     protected function totalFulfilled(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->fulfilled_qty * $this->unit_price,
+            get: fn () => (float) ($this->fulfilled_qty * $this->unit_price),
         );
     }
 
@@ -73,7 +126,7 @@ class Wishlist extends Model
     {
         return Attribute::make(
             get: fn () => $this->target_qty > 0
-                ? round(($this->fulfilled_qty / $this->target_qty) * 100, 2)
+                ? min(100, round(($this->fulfilled_qty / $this->target_qty) * 100, 1))
                 : 0,
         );
     }
@@ -84,7 +137,7 @@ class Wishlist extends Model
     protected function formattedUnitPrice(): Attribute
     {
         return Attribute::make(
-            get: fn () => 'Rp '.number_format($this->unit_price, 0, ',', '.'),
+            get: fn () => 'Rp '.number_format((float) $this->unit_price, 0, ',', '.'),
         );
     }
 
@@ -94,7 +147,7 @@ class Wishlist extends Model
     protected function formattedTotalTarget(): Attribute
     {
         return Attribute::make(
-            get: fn () => 'Rp '.number_format($this->total_target, 0, ',', '.'),
+            get: fn () => 'Rp '.number_format((float) $this->total_target, 0, ',', '.'),
         );
     }
 
@@ -104,7 +157,7 @@ class Wishlist extends Model
     protected function formattedTotalFulfilled(): Attribute
     {
         return Attribute::make(
-            get: fn () => 'Rp '.number_format($this->total_fulfilled, 0, ',', '.'),
+            get: fn () => 'Rp '.number_format((float) $this->total_fulfilled, 0, ',', '.'),
         );
     }
 

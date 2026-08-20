@@ -48,6 +48,11 @@ class LandingController extends Controller
                 'photo_url' => $member->photo_url,
             ]));
 
+        $latestAnnouncement = \App\Models\Post::published()
+            ->with('author')
+            ->latest('published_at')
+            ->first();
+
         return Inertia::render('Welcome', [
             'prayerTimes' => $prayerData,
             'nextPrayer' => $nextPrayer,
@@ -66,6 +71,14 @@ class LandingController extends Controller
                 'imam' => 'Ustadz Muhammad Ridwan',
                 'date' => $this->getNextFriday(),
             ],
+            'latestAnnouncement' => $latestAnnouncement ? [
+                'id' => $latestAnnouncement->id,
+                'title' => $latestAnnouncement->title,
+                'slug' => $latestAnnouncement->slug,
+                'excerpt' => $latestAnnouncement->excerpt,
+                'image_url' => $latestAnnouncement->image_url,
+                'published_at' => $latestAnnouncement->published_at->translatedFormat('d F Y'),
+            ] : null,
             'posts' => \App\Models\Post::published()
                 ->with('author')
                 ->latest('published_at')

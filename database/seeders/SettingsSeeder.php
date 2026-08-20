@@ -89,14 +89,14 @@ class SettingsSeeder extends Seeder
             ],
             [
                 'key' => 'phone',
-                'value' => '+62 812 3456 7890',
+                'value' => '+62 823 4671 9219',
                 'type' => 'text',
                 'group' => 'contact',
                 'label' => 'Nomor Telepon',
             ],
             [
                 'key' => 'whatsapp',
-                'value' => '6281234567890',
+                'value' => '6282346719219',
                 'type' => 'text',
                 'group' => 'contact',
                 'label' => 'Nomor WhatsApp (format: 62...)',

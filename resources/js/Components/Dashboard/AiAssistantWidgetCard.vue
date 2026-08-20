@@ -165,7 +165,7 @@ const toggleSpeech = () => {
                 <!-- Loading state -->
                 <div v-if="isLoading" class="flex items-center gap-2 py-2 text-emerald-200 text-xs">
                     <ArrowPathIcon class="w-4 h-4 animate-spin text-amber-400" />
-                    <span>AI sedang mengambil data dari database masjid...</span>
+                    <span>Huda sedang mengambil data dari database masjid...</span>
                 </div>
 
                 <!-- Content -->

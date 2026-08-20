@@ -40,7 +40,8 @@ const menuSections = [
         icon: BanknotesIcon,
         items: [
             { label: 'Laporan Keuangan', href: '/transparansi/keuangan', icon: BanknotesIcon },
-            { label: 'Inventaris Aset', href: '/transparansi/aset', icon: BuildingOfficeIcon }
+            { label: 'Inventaris Aset', href: '/transparansi/aset', icon: BuildingOfficeIcon },
+            { label: 'Kebutuhan Masjid', href: '/wishlist', icon: HeartIcon }
         ]
     },
     {
@@ -50,7 +51,8 @@ const menuSections = [
             { label: 'Jadwal Sholat', href: '/ibadah/jadwal', icon: ClockIcon },
             { label: 'Agenda Kegiatan', href: '/ibadah/agenda', icon: CalendarIcon },
             { label: 'Kajian Rutin', href: '/kajian', icon: CalendarIcon },
-            { label: 'Jadwal Jumat', href: '/ibadah/jumat', icon: CalendarIcon }
+            { label: 'Jadwal Jumat', href: '/ibadah/jumat', icon: CalendarIcon },
+            { label: 'Layanan Umat', href: '/layanan-umat', icon: HeartIcon }
         ]
     }
 ];
@@ -138,11 +140,12 @@ const menuSections = [
                                     <!-- Footer -->
                                     <div class="border-t border-slate-100 px-6 py-4 bg-slate-50">
                                         <a 
-                                            href="tel:+62123456789" 
+                                            :href="$page.props.settings?.whatsapp ? `https://wa.me/${$page.props.settings.whatsapp}` : ($page.props.settings?.phone ? `tel:${$page.props.settings.phone}` : 'https://wa.me/6282346719219')" 
+                                            target="_blank"
                                             class="flex items-center justify-center gap-2 text-emerald-600 hover:text-emerald-700 font-semibold transition-colors"
                                         >
                                             <PhoneIcon class="w-5 h-5" />
-                                            <span>Hubungi Kami</span>
+                                            <span>Hubungi Kami (WhatsApp)</span>
                                         </a>
                                     </div>
                                 </div>

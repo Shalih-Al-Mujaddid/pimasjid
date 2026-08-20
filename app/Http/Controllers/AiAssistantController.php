@@ -598,7 +598,7 @@ class AiAssistantController extends Controller
                         .'  Harga/unit: '.$w['unit_price']." | Target: {$w['target_qty']} unit (Terpenuhi: {$w['fulfilled_qty']})\n"
                         .'  Status: *'.$w['status']."*\n\n";
                 }
-                $reply .= 'Jamaah dapat berpartisipasi mewujudkan fasilitas di atas melalui infaq ke rekening resmi masjid.';
+                $reply .= 'Jamaah dapat melihat rincian serta menyalurkan donasi barang atau transfer dana langsung melalui menu **Kebutuhan Masjid** (/wishlist).';
 
                 return trim($reply);
             }

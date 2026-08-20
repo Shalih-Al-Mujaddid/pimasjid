@@ -45,6 +45,7 @@ const navigationItems = [
         items: [
             { name: 'Laporan Keuangan', href: '/transparansi/keuangan' },
             { name: 'Daftar Aset & Wakaf', href: '/transparansi/aset' },
+            { name: '🎁 Kebutuhan Masjid (Wishlist)', href: '/wishlist' },
         ],
     },
     {
@@ -58,6 +59,7 @@ const navigationItems = [
             { name: 'Petugas Jumat', href: '/ibadah/jumat' },
             { name: '🧭 Arah Kiblat', href: '/ibadah/kiblat' },
             { name: '📖 Al-Quran Digital', href: '/quran' },
+            { name: '🎁 Kebutuhan & Wishlist', href: '/wishlist' },
             { name: '🤝 Layanan Umat', href: '/layanan-umat' },
             { name: '🕌 Info Zakat', href: '/info/zakat' },
             { name: '🐑 Daftar Qurban', href: '/info/qurban' },

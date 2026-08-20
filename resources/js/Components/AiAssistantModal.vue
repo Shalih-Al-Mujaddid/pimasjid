@@ -290,7 +290,7 @@ const stopSpeech = () => {
                         <span class="w-2 h-2 bg-emerald-500 rounded-full animate-bounce"></span>
                         <span class="w-2 h-2 bg-emerald-500 rounded-full animate-bounce [animation-delay:0.2s]"></span>
                         <span class="w-2 h-2 bg-emerald-500 rounded-full animate-bounce [animation-delay:0.4s]"></span>
-                        <span class="text-xs text-slate-400 font-medium ml-1">AI sedang memproses...</span>
+                        <span class="text-xs text-slate-400 font-medium ml-1">Huda sedang memproses...</span>
                     </div>
                 </div>
             </div>

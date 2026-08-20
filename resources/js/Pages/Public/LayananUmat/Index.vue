@@ -374,7 +374,7 @@ const getStatusBadge = (status) => {
                                 v-model="form.phone"
                                 type="text" 
                                 required
-                                placeholder="08123456789"
+                                placeholder="082346719219"
                                 class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-emerald-500"
                             />
                             <div v-if="form.errors.phone" class="text-rose-500 text-[11px] mt-1">{{ form.errors.phone }}</div>

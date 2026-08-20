@@ -175,7 +175,7 @@ const submit = () => {
                 <div class="mt-8 text-center p-6 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-xl text-white">
                     <h4 class="font-bold mb-2">Ada Pertanyaan?</h4>
                     <p class="mb-4">Hubungi pengurus masjid untuk informasi lebih lanjut</p>
-                    <a :href="$page.props.settings?.whatsapp ? `https://wa.me/${$page.props.settings.whatsapp}` : '#'" target="_blank"
+                    <a :href="$page.props.settings?.whatsapp ? `https://wa.me/${$page.props.settings.whatsapp}` : 'https://wa.me/6282346719219'" target="_blank"
                        class="inline-block px-6 py-3 bg-white text-emerald-600 font-bold rounded-lg hover:bg-emerald-50 transition">
                         💬 Hubungi via WhatsApp
                     </a>

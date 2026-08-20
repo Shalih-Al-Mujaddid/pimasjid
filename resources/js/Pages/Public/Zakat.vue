@@ -195,7 +195,7 @@ const formatRupiah = (amount) => {
                 <div class="mt-12 text-center p-8 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-xl text-white">
                     <h3 class="text-2xl font-bold mb-4">Siap Menunaikan Zakat?</h3>
                     <p class="mb-6">Hubungi pengurus masjid atau datang langsung ke sekretariat masjid</p>
-                    <a :href="$page.props.settings?.whatsapp ? `https://wa.me/${$page.props.settings.whatsapp}` : '#'" target="_blank" class="inline-block px-8 py-3 bg-white text-emerald-600 font-bold rounded-lg hover:bg-emerald-50 transition">
+                    <a :href="$page.props.settings?.whatsapp ? `https://wa.me/${$page.props.settings.whatsapp}` : 'https://wa.me/6282346719219'" target="_blank" class="inline-block px-8 py-3 bg-white text-emerald-600 font-bold rounded-lg hover:bg-emerald-50 transition">
                         Hubungi via WhatsApp
                     </a>
                 </div>

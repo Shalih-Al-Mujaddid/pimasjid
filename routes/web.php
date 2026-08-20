@@ -67,6 +67,11 @@ Route::get('/layanan-umat/{service:slug}', [App\Http\Controllers\LayananUmatCont
 Route::post('/layanan-umat/{service:slug}/ajukan', [App\Http\Controllers\LayananUmatController::class, 'storeApplication'])
     ->name('public.layanan_umat.submit');
 
+// Public Wishlist / Kebutuhan Masjid
+Route::get('/wishlist', [App\Http\Controllers\WishlistController::class, 'publicIndex'])->name('public.wishlist.index');
+Route::get('/wishlist/{wishlist}', [App\Http\Controllers\WishlistController::class, 'publicShow'])->name('public.wishlist.show');
+Route::post('/wishlist/{wishlist}/kontribusi', [App\Http\Controllers\WishlistController::class, 'publicContribute'])->name('public.wishlist.contribute');
+
 // Public AI Assistant Chat Endpoint
 Route::post('/api/ai-assistant/chat', [App\Http\Controllers\AiAssistantController::class, 'chat'])
     ->name('public.ai.chat');
@@ -214,6 +219,17 @@ Route::middleware('auth')->group(function () {
         Route::delete('/services/{service}', [App\Http\Controllers\LayananUmatController::class, 'deleteService'])->name('admin.layanan_umat.service.destroy');
         Route::patch('/applications/{application}/status', [App\Http\Controllers\LayananUmatController::class, 'updateApplicationStatus'])->name('admin.layanan_umat.application.status');
     });
+
+    // Admin Wishlist / Kebutuhan Masjid Management
+    Route::prefix('admin/wishlists')->group(function () {
+        Route::get('/', [App\Http\Controllers\WishlistController::class, 'index'])->name('admin.wishlist.index');
+        Route::post('/', [App\Http\Controllers\WishlistController::class, 'store'])->name('admin.wishlist.store');
+        Route::put('/{wishlist}', [App\Http\Controllers\WishlistController::class, 'update'])->name('admin.wishlist.update');
+        Route::delete('/{wishlist}', [App\Http\Controllers\WishlistController::class, 'destroy'])->name('admin.wishlist.destroy');
+        Route::post('/{wishlist}/contributions', [App\Http\Controllers\WishlistController::class, 'storeManualContribution'])->name('admin.wishlist.contribution.store');
+    });
+    Route::patch('/admin/wishlist-contributions/{contribution}/verify', [App\Http\Controllers\WishlistController::class, 'verifyContribution'])->name('admin.wishlist.contribution.verify');
+    Route::patch('/admin/wishlist-contributions/{contribution}/reject', [App\Http\Controllers\WishlistController::class, 'rejectContribution'])->name('admin.wishlist.contribution.reject');
 });
 
 require __DIR__.'/auth.php';
